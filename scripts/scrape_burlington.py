@@ -36,7 +36,6 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # ── Config ────────────────────────────────────────────────────────────────────
 
 ESCRIBE_BASE    = "https://burlingtonpublishing.escribemeetings.com"
-PAST_MEETINGS   = f"{ESCRIBE_BASE}/MeetingsCalendarView.aspx/PastMeetings"
 MEETING_PAGE    = f"{ESCRIBE_BASE}/Meeting.aspx"
 FILESTREAM      = f"{ESCRIBE_BASE}/filestream.ashx"
 OUTPUT_DIR      = Path(__file__).parent.parent / "meetings" / "burlington"
@@ -50,79 +49,110 @@ CALENDAR_URL = f"{ESCRIBE_BASE}/MeetingsCalendarView.aspx"
 
 HEADERS = {
     "User-Agent": "CivicConnect/1.0 (civic engagement tool; github.com/wetmud/CivicConnect)",
-    "Accept": "application/json, text/html, */*",
+    "Accept": "text/html, */*",
 }
 
-# ── Session ───────────────────────────────────────────────────────────────────
-# eSCRIBE uses ASP.NET WebMethods that require a valid session cookie and
-# specific headers. We establish the session by loading the calendar page first.
-
-_session: requests.Session | None = None
-
-def get_session() -> requests.Session:
-    global _session
-    if _session is not None:
-        return _session
-    s = requests.Session()
-    s.verify = SSL_VERIFY
-    s.headers.update(HEADERS)
-    print("  Establishing eSCRIBE session...")
-    time.sleep(REQUEST_DELAY)
-    s.get(CALENDAR_URL, timeout=REQUEST_TIMEOUT)  # sets ASP.NET session cookie
-    _session = s
-    return s
+# ── Helpers ───────────────────────────────────────────────────────────────────
 
 def get(url: str, **kwargs) -> requests.Response:
     time.sleep(REQUEST_DELAY)
-    r = get_session().get(url, timeout=REQUEST_TIMEOUT, **kwargs)
+    r = requests.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT, verify=SSL_VERIFY, **kwargs)
     r.raise_for_status()
     return r
 
-def post_json(url: str, payload: dict) -> dict:
-    time.sleep(REQUEST_DELAY)
-    r = get_session().post(
-        url,
-        headers={
-            "Content-Type": "application/json; charset=utf-8",
-            "X-Requested-With": "XMLHttpRequest",
-            "Referer": CALENDAR_URL,
-        },
-        json=payload,
-        timeout=REQUEST_TIMEOUT,
-    )
-    r.raise_for_status()
-    return r.json()
+# ── Step 1: Fetch recent meetings by scraping the public HTML calendar ────────
+# The eSCRIBE AJAX endpoints require ASP.NET session state that is not reliably
+# reproducible in CI. Instead, we scrape Meeting.aspx links directly from the
+# public calendar HTML — no session or auth required.
 
-# ── Step 1: Fetch recent meetings ─────────────────────────────────────────────
-
-def fetch_recent_meetings(page_size: int = 10) -> list[dict]:
+def fetch_recent_meetings(limit: int = 5) -> list[dict]:
     """Returns list of dicts with keys: id (UUID), title, date (YYYY-MM-DD)."""
-    print("Fetching recent meetings from eSCRIBE...")
-    data = post_json(PAST_MEETINGS, {"pageIndex": 0, "pageSize": page_size, "meetingType": ""})
+    print("Fetching meetings from eSCRIBE calendar HTML...")
+    resp = get(CALENDAR_URL)
+    soup = BeautifulSoup(resp.text, "html.parser")
+
+    seen = set()
     meetings = []
-    # eSCRIBE returns a 'd' wrapper with 'aaData' rows
-    rows = data.get("d", {}).get("aaData", []) if isinstance(data.get("d"), dict) else []
-    # Fallback: sometimes the response is just a list
-    if not rows and isinstance(data.get("d"), list):
-        rows = data["d"]
-    for row in rows:
-        # Each row is typically [id, title, date_str, ...]
-        if isinstance(row, list) and len(row) >= 3:
-            meeting_id   = row[0]
-            meeting_title = row[1] if isinstance(row[1], str) else str(row[1])
-            date_raw     = row[2] if isinstance(row[2], str) else str(row[2])
-        elif isinstance(row, dict):
-            meeting_id    = row.get("Id") or row.get("id") or row.get("MeetingId")
-            meeting_title = row.get("Title") or row.get("title") or ""
-            date_raw      = row.get("Date") or row.get("MeetingDate") or ""
-        else:
+
+    # Meeting links look like: Meeting.aspx?Id=<UUID>&Agenda=...&lang=English
+    uuid_re = re.compile(
+        r"Meeting\.aspx\?Id=([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})",
+        re.IGNORECASE,
+    )
+
+    for tag in soup.find_all(["a", "div", "span", "td"], string=True):
+        href = tag.get("href", "")
+        m = uuid_re.search(href)
+        if not m:
+            # Also check data attributes and onclick values
+            for attr in ("onclick", "data-url", "data-id"):
+                val = tag.get(attr, "")
+                m = uuid_re.search(val)
+                if m:
+                    break
+        if not m:
             continue
-        # Normalise date to YYYY-MM-DD
-        date_str = _parse_date(str(date_raw))
-        if meeting_id and date_str:
-            meetings.append({"id": meeting_id, "title": meeting_title, "date": date_str})
-    print(f"  Found {len(meetings)} meetings.")
-    return meetings
+        mid = m.group(1)
+        if mid in seen:
+            continue
+        seen.add(mid)
+
+        # Try to extract a title and date from nearby text
+        title = tag.get_text(strip=True) or "Council Meeting"
+        date_str = _extract_date_near(tag)
+        meetings.append({"id": mid, "title": title, "date": date_str or ""})
+
+    # Also scan raw HTML for UUIDs not in visible links (JS-rendered menus etc.)
+    for m in uuid_re.finditer(resp.text):
+        mid = m.group(1)
+        if mid not in seen:
+            seen.add(mid)
+            meetings.append({"id": mid, "title": "Council Meeting", "date": ""})
+
+    # For meetings without a parsed date, fetch the meeting page to get it
+    filled = []
+    for mtg in meetings[:limit * 3]:  # fetch a few extra in case some lack dates
+        if not mtg["date"]:
+            mtg["date"] = _fetch_meeting_date(mtg["id"]) or ""
+        if mtg["date"]:
+            filled.append(mtg)
+        if len(filled) >= limit:
+            break
+
+    # Sort newest-first
+    filled.sort(key=lambda x: x["date"], reverse=True)
+    result = filled[:limit]
+    print(f"  Found {len(result)} meetings.")
+    return result
+
+def _extract_date_near(tag) -> str | None:
+    """Looks for a date string in the tag's text or its parent's text."""
+    for node in [tag, tag.parent, tag.parent.parent if tag.parent else None]:
+        if node is None:
+            continue
+        text = node.get_text(" ", strip=True)
+        d = _parse_date(text)
+        if d:
+            return d
+    return None
+
+def _fetch_meeting_date(meeting_id: str) -> str | None:
+    """Fetches the meeting page and extracts the date from its title/header."""
+    try:
+        url = f"{MEETING_PAGE}?Id={meeting_id}&Agenda=Agenda&lang=English"
+        resp = get(url)
+        soup = BeautifulSoup(resp.text, "html.parser")
+        # eSCRIBE typically puts the date in the page <title> or a heading
+        candidates = [soup.title, soup.find("h1"), soup.find("h2"),
+                      soup.find(class_=re.compile(r"meeting.?title|event.?title", re.I))]
+        for el in candidates:
+            if el:
+                d = _parse_date(el.get_text(" ", strip=True))
+                if d:
+                    return d
+    except Exception:
+        pass
+    return None
 
 def _parse_date(raw: str) -> str | None:
     """Converts various date formats to YYYY-MM-DD, or None if unparseable."""
