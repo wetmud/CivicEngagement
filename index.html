@@ -387,6 +387,18 @@
       margin-bottom: 0.9rem; display: inline-block;
     }
     :root.light .rep-profile-party { background: rgba(104,47,237,0.08); border-color: rgba(104,47,237,0.2); }
+    .rep-profile-email {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+      word-break: break-all;
+      text-align: center;
+      transition: color 0.15s;
+    }
+    .rep-profile-email:hover { color: var(--accent); text-decoration: underline; }
+    .rep-profile-email.copied { color: var(--accent); }
     .rep-profile-social { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.35rem; margin-bottom: 1rem; }
     .rep-profile-social a {
       font-size: 0.62rem; color: var(--text-muted); text-decoration: none;
@@ -1746,6 +1758,7 @@
         <div class="rep-profile-name" id="rpModal-name"></div>
         <div class="rep-profile-role" id="rpModal-role"></div>
         <div class="rep-profile-party" id="rpModal-party"></div>
+        <div class="rep-profile-email" id="rpModal-email-display" onclick="rpModalCopyEmail()" title="Click to copy"></div>
         <div class="rep-profile-social" id="rpModal-social"></div>
         <div class="rep-profile-actions">
           <button class="btn-primary" id="rpModal-email-btn" onclick="rpModalWriteEmail()">✉ Write Email</button>
@@ -2382,6 +2395,14 @@
       partyEl.style.display = 'none';
     }
 
+    const emailDisplayEl = document.getElementById('rpModal-email-display');
+    if (rep.email) {
+      emailDisplayEl.textContent = rep.email;
+      emailDisplayEl.style.display = '';
+    } else {
+      emailDisplayEl.style.display = 'none';
+    }
+
     // Social links — reuse buildSocialLinks, strip the outer div wrapper
     const socialHtml = buildSocialLinks(rep).replace('<div class="rep-social">', '').replace('</div>', '');
     document.getElementById('rpModal-social').innerHTML = socialHtml;
@@ -2500,6 +2521,20 @@
     if (!e || e.target === document.getElementById('rep-profile-backdrop')) {
       document.getElementById('rep-profile-backdrop').classList.remove('open');
     }
+  }
+
+  function rpModalCopyEmail() {
+    const el = document.getElementById('rpModal-email-display');
+    const email = currentRepForProfile && currentRepForProfile.email;
+    if (!email) return;
+    navigator.clipboard.writeText(email).then(() => {
+      el.textContent = 'Copied!';
+      el.classList.add('copied');
+      setTimeout(() => {
+        el.textContent = email;
+        el.classList.remove('copied');
+      }, 1500);
+    }).catch(() => {});
   }
 
   function rpModalWriteEmail() {
