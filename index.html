@@ -2565,9 +2565,8 @@
     const merged = Object.assign({}, wikidataExtra, base);
     const mergedRep = Object.assign({}, rep, { extra: merged });
     // buildSocialLinks() sanitizes all values via escAttr() internally
-    const socialHtml = buildSocialLinks(mergedRep)
-      .replace('<div class="rep-social">', '')
-      .replace('</div>', '');
+    const raw = buildSocialLinks(mergedRep);
+    const socialHtml = raw.replace(/^<div class="rep-social">/, '').replace(/<\/div>$/, '');
     document.getElementById('rpModal-social').innerHTML = socialHtml;
   }
 
