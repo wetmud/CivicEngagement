@@ -785,6 +785,150 @@
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
+    /* ── Meeting summary cards ────────────────────────────── */
+    .meeting-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin-bottom: 0.85rem;
+      overflow: hidden;
+      animation: fadeUp 0.4s ease both;
+      transition: border-color 0.22s ease, box-shadow 0.22s ease;
+    }
+    .meeting-card:hover {
+      border-color: var(--accent-dim);
+      box-shadow: 0 4px 16px color-mix(in srgb, var(--accent) 12%, transparent);
+    }
+    .meeting-card-header {
+      padding: 1.1rem 1.4rem;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .meeting-card-meta {
+      flex: 1;
+      min-width: 0;
+    }
+    .meeting-card-date {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+    }
+    .meeting-card-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+    }
+    .meeting-card-tldr {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .meeting-card-toggle {
+      flex-shrink: 0;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      padding-top: 0.2rem;
+      transition: transform 0.2s;
+    }
+    .meeting-card.open .meeting-card-toggle { transform: rotate(180deg); }
+    .meeting-card-body {
+      display: none;
+      padding: 0 1.4rem 1.2rem;
+      border-top: 1px solid var(--border);
+    }
+    .meeting-card.open .meeting-card-body { display: block; }
+    .meeting-time-bar {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin: 1rem 0 0.85rem;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+    .meeting-time-track {
+      flex: 1;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .meeting-time-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+    }
+    .meeting-items-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.73rem;
+      margin-bottom: 0.85rem;
+    }
+    .meeting-items-table th {
+      text-align: left;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      padding: 0.4rem 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .meeting-items-table td {
+      padding: 0.55rem 0.5rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .meeting-items-table tr:last-child td { border-bottom: none; }
+    .meeting-outcome {
+      display: inline-block;
+      font-size: 0.58rem;
+      font-family: 'DM Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      padding: 0.12rem 0.45rem;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+    .outcome-passed   { background: rgba(74,200,100,0.15); color: #4ac864; }
+    .outcome-failed   { background: rgba(200,74,74,0.15);  color: #c85454; }
+    .outcome-deferred { background: rgba(200,160,74,0.15); color: #c8a04a; }
+    .outcome-received, .outcome-noted { background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
+    .outcome-withdrawn { background: var(--border); color: var(--text-muted); }
+    .meeting-card-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+    }
+    .meeting-source-link, .meeting-share-btn {
+      font-size: 0.68rem;
+      font-family: 'DM Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.35rem 0.85rem;
+      border-radius: 4px;
+      text-decoration: none;
+      border: 1px solid var(--accent-dim);
+      color: var(--accent);
+      background: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .meeting-source-link:hover, .meeting-share-btn:hover {
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+    }
+    .meeting-empty {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding: 2rem 0;
+      text-align: center;
+    }
+
     .results-header {
       font-size: 0.68rem;
       text-transform: uppercase;
@@ -1590,6 +1734,7 @@
     <div class="tabs" id="search-tabs">
       <button class="tab-btn active" onclick="switchTab('reps', this)">Local &amp; Provincial</button>
       <button class="tab-btn" onclick="switchTab('services', this)">Nearby Services</button>
+      <button class="tab-btn" data-short="Meetings" onclick="switchTab('meetings', this)"><span class="tab-long">Council Meetings</span></button>
       <!-- BUDGET TAB: re-enable by removing comment -->
       <!-- <button class="tab-btn" onclick="switchTab('budget', this)">City Budget</button> -->
       <!-- FEDERAL TAB (saved for later): <button class="tab-btn" onclick="switchTab('federal', this)">Federal</button> -->
@@ -1599,6 +1744,9 @@
     </div>
     <div class="tab-panel" id="tab-services">
       <div id="results-services"></div>
+    </div>
+    <div class="tab-panel" id="tab-meetings">
+      <div id="results-meetings"><div class="loading"><div class="spinner"></div>Loading meeting summaries…</div></div>
     </div>
     <!-- BUDGET PANEL: re-enable by removing comment -->
     <!-- <div class="tab-panel" id="tab-budget">
@@ -2104,11 +2252,197 @@
   });
 
   // ── Tab switching ─────────────────────────────────────────
+  // ── Council Meeting Summaries ─────────────────────────────────────────────
+  const MEETINGS_BASE = 'meetings/burlington/';
+  let _meetingsLoaded = false;
+
+  async function loadMeetings() {
+    if (_meetingsLoaded) return;
+    const el = document.getElementById('results-meetings');
+    try {
+      const res = await fetch(MEETINGS_BASE + 'index.json');
+      if (!res.ok) throw new Error('no index');
+      const dates = await res.json();
+      if (!dates.length) { showMeetingEmpty(el, 'No meeting summaries yet — check back after the next council meeting.'); _meetingsLoaded = true; return; }
+      el.textContent = '';
+      const summaries = await Promise.all(
+        dates.map(d => fetch(MEETINGS_BASE + d + '.json').then(r => r.json()).catch(() => null))
+      );
+      summaries.filter(Boolean).forEach((s, i) => el.appendChild(buildMeetingCard(s, i)));
+      _meetingsLoaded = true;
+    } catch (e) {
+      showMeetingEmpty(el, 'Meeting summaries coming soon — published after each Burlington council meeting.');
+    }
+  }
+
+  function showMeetingEmpty(el, msg) {
+    el.textContent = '';
+    const d = document.createElement('div');
+    d.className = 'meeting-empty';
+    d.textContent = msg;
+    el.appendChild(d);
+  }
+
+  function buildMeetingCard(s, idx) {
+    const card = document.createElement('div');
+    card.className = 'meeting-card';
+    card.style.animationDelay = (idx * 0.06) + 's';
+
+    // Header
+    const header = document.createElement('div');
+    header.className = 'meeting-card-header';
+    header.onclick = () => card.classList.toggle('open');
+
+    const meta = document.createElement('div');
+    meta.className = 'meeting-card-meta';
+
+    const dateEl = document.createElement('div');
+    dateEl.className = 'meeting-card-date';
+    dateEl.textContent = formatMeetingDate(s.date) + (s.meeting_type ? ' · ' + s.meeting_type : '');
+    meta.appendChild(dateEl);
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'meeting-card-title';
+    titleEl.textContent = 'Burlington City Council';
+    meta.appendChild(titleEl);
+
+    if (s.tldr) {
+      const tldr = document.createElement('div');
+      tldr.className = 'meeting-card-tldr';
+      tldr.textContent = s.tldr;
+      meta.appendChild(tldr);
+    }
+
+    const chevron = document.createElement('div');
+    chevron.className = 'meeting-card-toggle';
+    chevron.textContent = '▾';
+
+    header.appendChild(meta);
+    header.appendChild(chevron);
+    card.appendChild(header);
+
+    // Body
+    const body = document.createElement('div');
+    body.className = 'meeting-card-body';
+
+    // Time bar — values are integers from trusted JSON, safe to use directly
+    const productive = s.productive_minutes || 0;
+    const procedural = s.procedural_minutes || 0;
+    const total = productive + procedural || 1;
+    const pct = Math.round((productive / total) * 100);
+
+    const timeBar = document.createElement('div');
+    timeBar.className = 'meeting-time-bar';
+    const t1 = document.createElement('span');
+    t1.textContent = '\u23f1 ' + productive + 'm productive';
+    const track = document.createElement('div');
+    track.className = 'meeting-time-track';
+    const fill = document.createElement('div');
+    fill.className = 'meeting-time-fill';
+    fill.style.width = pct + '%';
+    track.appendChild(fill);
+    const t2 = document.createElement('span');
+    t2.textContent = procedural + 'm procedural';
+    timeBar.appendChild(t1);
+    timeBar.appendChild(track);
+    timeBar.appendChild(t2);
+    body.appendChild(timeBar);
+
+    // Items table
+    if (s.items && s.items.length) {
+      const table = document.createElement('table');
+      table.className = 'meeting-items-table';
+
+      const thead = document.createElement('thead');
+      const hrow = document.createElement('tr');
+      ['Item', 'Outcome', 'Vote', '~Time'].forEach(label => {
+        const th = document.createElement('th');
+        th.textContent = label;
+        hrow.appendChild(th);
+      });
+      thead.appendChild(hrow);
+      table.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+      const outcomeClasses = { passed: 'outcome-passed', failed: 'outcome-failed', deferred: 'outcome-deferred', received: 'outcome-received', noted: 'outcome-noted', withdrawn: 'outcome-withdrawn' };
+      s.items.forEach(item => {
+        const tr = document.createElement('tr');
+        const badgeClass = outcomeClasses[(item.outcome || '').toLowerCase()] || 'outcome-noted';
+
+        const tdTitle = document.createElement('td');
+        tdTitle.style.maxWidth = '260px';
+        const strong = document.createElement('strong');
+        strong.style.cssText = 'display:block;color:var(--text);margin-bottom:0.2rem;font-size:0.73rem';
+        strong.textContent = item.title || '';
+        tdTitle.appendChild(strong);
+        if (item.notes) {
+          const notes = document.createTextNode(item.notes);
+          tdTitle.appendChild(notes);
+        }
+
+        const tdOutcome = document.createElement('td');
+        const badge = document.createElement('span');
+        badge.className = 'meeting-outcome ' + badgeClass;
+        badge.textContent = item.outcome || '\u2014';
+        tdOutcome.appendChild(badge);
+
+        const tdVote = document.createElement('td');
+        tdVote.textContent = item.vote || '\u2014';
+
+        const tdTime = document.createElement('td');
+        tdTime.textContent = item.estimated_minutes ? item.estimated_minutes + 'm' : '\u2014';
+
+        tr.appendChild(tdTitle); tr.appendChild(tdOutcome); tr.appendChild(tdVote); tr.appendChild(tdTime);
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      body.appendChild(table);
+    }
+
+    // Actions
+    const actions = document.createElement('div');
+    actions.className = 'meeting-card-actions';
+    if (s.source_url && /^https?:\/\//.test(s.source_url)) {
+      const srcLink = document.createElement('a');
+      srcLink.className = 'meeting-source-link';
+      srcLink.href = escAttr(s.source_url);
+      srcLink.target = '_blank';
+      srcLink.rel = 'noopener';
+      srcLink.textContent = '\u2197 Official Minutes';
+      actions.appendChild(srcLink);
+    }
+    const shareBtn = document.createElement('button');
+    shareBtn.className = 'meeting-share-btn';
+    shareBtn.textContent = '\ud835\udd4f Share';
+    shareBtn.onclick = () => shareMeetingOnX(s);
+    actions.appendChild(shareBtn);
+
+    body.appendChild(actions);
+    card.appendChild(body);
+    return card;
+  }
+
+  function formatMeetingDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr + 'T12:00:00');
+    return d.toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  function shareMeetingOnX(s) {
+    const date = formatMeetingDate(s.date);
+    const tldr = s.tldr ? s.tldr.slice(0, 160) : '';
+    const deferred = s.deferred && s.deferred.length ? ' ' + s.deferred.length + ' item(s) deferred.' : '';
+    const time = (s.productive_minutes && s.procedural_minutes) ? ' ' + s.productive_minutes + 'm productive / ' + s.procedural_minutes + 'm procedural.' : '';
+    const text = 'Burlington City Council \u2013 ' + date + '\n' + tldr + deferred + time + '\n\n#Burlington #CivicConnect';
+    window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text.slice(0, 280)), '_blank', 'noopener');
+  }
+
   function switchTab(name, btn) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('tab-' + name).classList.add('active');
+    if (name === 'meetings') loadMeetings();
   }
 
   // ── Main search ───────────────────────────────────────────
