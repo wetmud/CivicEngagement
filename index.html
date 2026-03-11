@@ -1997,6 +1997,12 @@
   const input = document.getElementById('address-input');
   const dropdown = document.getElementById('autocomplete-dropdown');
 
+  // ── Restore search from URL ────────────────────────────────
+  (function restoreFromUrl() {
+    const q = new URLSearchParams(window.location.search).get('q');
+    if (q) { input.value = q; findAll(); }
+  })();
+
   // ── Autocomplete ──────────────────────────────────────────
   input.addEventListener('input', () => {
     clearTimeout(autocompleteTimeout);
@@ -2075,6 +2081,7 @@
   async function findAll() {
     const address = input.value.trim();
     if (!address) return;
+    history.replaceState(null, '', '?q=' + encodeURIComponent(address));
 
     const btn = document.getElementById('search-btn');
     btn.disabled = true;
