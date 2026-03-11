@@ -1131,6 +1131,18 @@
     }
 
     footer a { color: var(--text-muted); text-decoration: underline; }
+    .footer-recommend-btn {
+      display: inline-block;
+      padding: 7px 18px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .footer-recommend-btn:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
 
     .privacy-banner {
       background: var(--surface);
@@ -1766,6 +1778,9 @@
 
 <footer>
   Powered by <a href="https://represent.opennorth.ca" target="_blank">Represent API</a> &amp; <a href="https://www.geoapify.com" target="_blank">Geoapify</a> &nbsp;·&nbsp; Built for civic engagement &nbsp;·&nbsp; 🔒 No data collected, ever
+  <div style="margin-top:12px;">
+    <a class="footer-recommend-btn" href="https://github.com/wetmud/CivicConnect/issues/new?title=Feature+Request&body=**Feature+idea:**%0A%0A**Why+it+would+help:**" target="_blank">💡 Recommend a Feature</a>
+  </div>
 </footer>
 
 <script>
@@ -2928,6 +2943,9 @@ Do not include placeholders like [Your Name] — end with just "A Concerned Resi
   const budgetSummaryCache = {};
 
   function initBudgetTab(addressText) {
+    // Budget tab is currently commented out — bail if DOM elements don't exist
+    if (!document.getElementById('budget-city-label')) return;
+
     const addr = (addressText || '').toLowerCase();
     currentCityKey = Object.keys(CITY_BUDGETS).find(k => addr.includes(k)) || null;
 
