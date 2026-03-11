@@ -35,6 +35,7 @@ Old lime-green palette is commented out directly above the active `:root` block 
 | Represent (OpenNorth) | Canadian rep data + ward boundaries | No key required |
 | Anthropic Claude | Email drafting + budget summaries | User-provided via session modal |
 | corsproxy.io | CORS proxy for Represent API | Hardcoded URL — replace before production |
+| Wikipedia REST API | Rep bio lookup in profile modal | No key required (`origin=*` for CORS) |
 
 **Claude model in use:** `claude-sonnet-4-20250514`
 
@@ -48,11 +49,13 @@ Old lime-green palette is commented out directly above the active `:root` block 
 | Address autocomplete | ~1250 | Debounced 300ms, Canada-only filter |
 | Representative fetch | ~1380 | Represent API, 3-level sort (city → regional → provincial) |
 | Rep card rendering | ~1790 | `escAttr()`, `buildSocialLinks()`, `renderRepList()` — photo + social media |
+| Rep profile modal | ~1850 | `openRepProfile()`, `fetchWikiBio()`, `renderWikiBio()` — Wikipedia bio + offices |
+| Support modal | ~2050 | `openSupport()` / `closeSupport()` — Ko-fi tiers, Recommend Feature button |
 | Ward boundary map | ~1430 | Leaflet + GeoJSON; scoring algo picks most-local boundary |
 | Nearby services | ~1490 | Geoapify Places, Haversine distance sort |
 | Email drafting modal | ~1570 | Claude call; graceful fallback template |
-| Budget data (CITY_BUDGETS) | ~1647 | Hard-coded JSON, 8 ON cities, 2025 + 2026 |
-| Budget tab init/render | ~2022 | City detection by address string match |
+| Budget data (CITY_BUDGETS) | ~1647 | Hard-coded JSON, 8 ON cities, 2025 + 2026 — **tab commented out** |
+| Budget tab init/render | ~2022 | City detection by address string match — **re-enable by un-commenting tab + panel** |
 | Budget card AI summary | ~2100 | Claude call; JSON parse; session cache |
 | Budget email draft | ~2178 | Claude call; same pattern as rep email |
 
@@ -160,3 +163,6 @@ If a managed version with a shared API key is offered later, cost-per-user is lo
 - Rep card photos come from `rep.photo_url` (Represent API). Not all reps have photos — the `onerror` handler hides broken images gracefully.
 - Rep social links are parsed from `rep.extra` (dict). Keys checked: `twitter`, `twitter_handle`, `facebook`, `instagram`, `youtube`, `linkedin`. Use `escAttr()` for all values inserted into HTML attributes — never bypass this.
 - `--on-accent` CSS var controls text color on top of accent-colored buttons. Dark mode: `#0e0f0c` (works on orange). Light mode: `#ffffff` (works on purple).
+- **Rep profile modal** (`#rep-profile-backdrop`): opens on any rep card click. Two-column layout — photo/actions left, Wikipedia bio + offices right. `wikiCache` (in-memory, keyed by `rep.name`) prevents redundant API calls. Fails silently if Wikipedia has no article. Uses DOM methods only (no `innerHTML`) for bio text — XSS safe.
+- **Support modal** (`#support-backdrop`): triggered by "☕ Support" header button. Ko-fi link: `ko-fi.com/jasonsteltman`. Tiers: $5/$10/$25/$50 CAD. Recommend Feature button links to GitHub issues. No Stripe, no backend.
+- **Budget tab is commented out** — search for `<!-- BUDGET TAB:` and `<!-- BUDGET PANEL:` to re-enable. All JS + data is intact.
