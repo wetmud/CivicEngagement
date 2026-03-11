@@ -19,6 +19,15 @@ index.html
 └── <script>      — All JavaScript (inline, ~2200 lines)
 ```
 
+**Brand palette (current):**
+| Token | Dark mode | Light mode |
+|-------|-----------|------------|
+| `--accent` | `#ffb963` (orange) | `#682FED` (purple) |
+| `--accent-dim` | `#e09840` | `#8252f0` |
+| `--accent2` | `#682FED` | `#ffb963` |
+| `--on-accent` | `#0e0f0c` | `#ffffff` |
+Old lime-green palette is commented out directly above the active `:root` block in `<style>`.
+
 **External APIs (all free tier):**
 | API | Purpose | Key location |
 |-----|---------|-------------|
@@ -38,6 +47,7 @@ index.html
 | Theme toggle | ~1230 | CSS vars swap; map tiles re-render on toggle |
 | Address autocomplete | ~1250 | Debounced 300ms, Canada-only filter |
 | Representative fetch | ~1380 | Represent API, 3-level sort (city → regional → provincial) |
+| Rep card rendering | ~1790 | `escAttr()`, `buildSocialLinks()`, `renderRepList()` — photo + social media |
 | Ward boundary map | ~1430 | Leaflet + GeoJSON; scoring algo picks most-local boundary |
 | Nearby services | ~1490 | Geoapify Places, Haversine distance sort |
 | Email drafting modal | ~1570 | Claude call; graceful fallback template |
@@ -147,3 +157,6 @@ If a managed version with a shared API key is offered later, cost-per-user is lo
 
 - The ward boundary scoring algorithm is at `fetchWardBoundary()` — don't simplify it; the priority logic exists to handle edge cases where Represent returns provincial boundaries instead of municipal ones.
 - Budget city detection fires on address string, not geocoded city field — watch for edge cases with suburbs (e.g. "Etobicoke" → needs to map to "toronto").
+- Rep card photos come from `rep.photo_url` (Represent API). Not all reps have photos — the `onerror` handler hides broken images gracefully.
+- Rep social links are parsed from `rep.extra` (dict). Keys checked: `twitter`, `twitter_handle`, `facebook`, `instagram`, `youtube`, `linkedin`. Use `escAttr()` for all values inserted into HTML attributes — never bypass this.
+- `--on-accent` CSS var controls text color on top of accent-colored buttons. Dark mode: `#0e0f0c` (works on orange). Light mode: `#ffffff` (works on purple).

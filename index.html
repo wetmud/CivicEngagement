@@ -679,6 +679,23 @@
       .rep-photo { width: 52px; height: 52px; }
     }
 
+    .courtesy-tip {
+      margin-top: 1.5rem;
+      padding: 1rem 1.25rem;
+      background: var(--profile-bg);
+      border-left: 3px solid var(--accent);
+      border-radius: 12px;
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+    .courtesy-tip-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 0.05rem; }
+    .courtesy-tip-heading {
+      font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--accent); margin-bottom: 0.35rem;
+    }
+    .courtesy-tip-body { font-size: 0.75rem; color: var(--text-muted); line-height: 1.65; }
+
     .services-section { margin-bottom: 1.75rem; }
 
     .services-category-header {
@@ -1890,6 +1907,14 @@
           </div>
         </div>`;
     });
+    html += `
+  <div class="courtesy-tip">
+    <div class="courtesy-tip-icon">🤝</div>
+    <div>
+      <div class="courtesy-tip-heading">A note on civic communication</div>
+      <div class="courtesy-tip-body">Representatives respond best to respectful, specific, and good-faith messages. Focus on one issue, explain your perspective clearly, and stay courteous — it is significantly more effective than frustration or demands.</div>
+    </div>
+  </div>`;
     document.getElementById(elId).innerHTML = html;
   }
 
