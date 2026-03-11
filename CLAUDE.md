@@ -36,6 +36,7 @@ Old lime-green palette is commented out directly above the active `:root` block 
 | Anthropic Claude | Email drafting + budget summaries | User-provided via session modal |
 | corsproxy.io | CORS proxy for Represent API | Hardcoded URL — replace before production |
 | Wikipedia REST API | Rep bio lookup in profile modal | No key required (`origin=*` for CORS) |
+| OpenParliament.ca API | Federal MP voting records | No key required — open civic data |
 
 **Claude model in use:** `claude-sonnet-4-20250514`
 
@@ -50,6 +51,7 @@ Old lime-green palette is commented out directly above the active `:root` block 
 | Representative fetch | ~1380 | Represent API, 3-level sort (city → regional → provincial) |
 | Rep card rendering | ~1790 | `escAttr()`, `buildSocialLinks()`, `renderRepList()` — photo + social media |
 | Rep profile modal | ~1850 | `openRepProfile()`, `fetchWikiBio()`, `renderWikiBio()` — Wikipedia bio + offices |
+| Voting record | ~2650 | `fetchVotingRecord()`, `renderVotes()`, `loadMoreVotes()` — federal MPs only, OpenParliament.ca |
 | Support modal | ~2050 | `openSupport()` / `closeSupport()` — Ko-fi tiers, Recommend Feature button |
 | Ward boundary map | ~1430 | Leaflet + GeoJSON; scoring algo picks most-local boundary |
 | Nearby services | ~1490 | Geoapify Places, Haversine distance sort |
@@ -92,7 +94,7 @@ If no key is set, the UI prompts the user before any Claude feature is used.
 - **No build step.** Edit `index.html`, refresh browser, done. Deploying = `git push`.
 - **CSS custom properties** drive all theming. `--bg`, `--surface`, `--border`, `--accent`, `--text-muted` etc. both light/dark variants live at the top of `<style>`.
 - **Budget data is hard-coded.** Adding a new city requires adding a key to `CITY_BUDGETS` with researched data. This is intentional — accuracy > automation.
-- **Federal reps are disabled** (lines ~1464–1465, commented out). Ready to enable when tested.
+- **Federal rep voting records** appear in the rep profile modal for MPs/Senators. Uses OpenParliament.ca API — no key required. Slug matching via `toOpenParliamentSlug()` (converts "Jane Smith" → "smith-jane"). Results cached in `votingCache`.
 - **corsproxy.io** is a placeholder. Replace with a Cloudflare Worker or Vercel Edge Function before production traffic.
 
 ---
@@ -105,7 +107,7 @@ If no key is set, the UI prompts the user before any Claude feature is used.
 | corsproxy.io (untrusted third party) | High | Self-hosted CORS proxy |
 | No rate limiting | Medium | Add per-session debounce or Cloudflare rate limiting |
 | No ARIA roles on modal | Low | Add `role="dialog"`, `aria-modal`, focus trap |
-| Federal rep code commented out | Low | Test and enable or remove dead code |
+| OpenParliament slug matching | Low | `toOpenParliamentSlug()` handles accents but may miss unusual names; test edge cases |
 | Budget city detection is naive string match | Low | Improve with geocoded city name normalization |
 
 ---
@@ -119,10 +121,19 @@ If no key is set, the UI prompts the user before any Claude feature is used.
 - [ ] BYOK modal polish + error states
 
 **Near-term features:**
-- [ ] Enable federal representatives (code ready)
+- [x] MP voting tracker — OpenParliament.ca, shown in rep profile modal (March 2026)
 - [ ] Mobile layout polish
 - [ ] Share representative info via URL
 - [ ] Expand budget coverage beyond 8 Ontario cities
+
+**Meeting Summarizer (Burlington pilot → scale):**
+- [ ] **Phase 1:** GitHub Actions cron → scrape Burlington council minutes (burlington.ca/en/council-and-city-administration/agendas-and-minutes.aspx) → send to Claude → commit structured JSON summary to `/meetings/burlington/`
+- [ ] **Phase 2:** "Meetings" tab on site — fetch and render summaries from static JSON
+- [ ] **Phase 3:** "Share on X" button — Twitter Web Intent pre-filled with 280-char summary + link (no API key needed)
+- [ ] **Phase 4:** Scale to other cities — each needs a data-source adapter (Burlington uses in-house video system, not YouTube; Toronto has Open Data API + YouTube)
+- Burlington data: minutes posted within 24h at the agendas URL above; no YouTube channel confirmed — videos hosted on-site. May need to scrape HTML minutes rather than transcribe video.
+- Summary format goal: journalist-style breakdown — agenda items, time per item, decisions (passed/failed/deferred), items rescheduled, "productive time" vs procedural, plain-English TL;DR
+- Toronto is better-resourced for Phase 4 (Open Data API + YouTube + vote CSV download)
 
 **Longer-term:**
 - [ ] PWA / offline support
@@ -166,3 +177,4 @@ If a managed version with a shared API key is offered later, cost-per-user is lo
 - **Rep profile modal** (`#rep-profile-backdrop`): opens on any rep card click. Two-column layout — photo/actions left, Wikipedia bio + offices right. `wikiCache` (in-memory, keyed by `rep.name`) prevents redundant API calls. Fails silently if Wikipedia has no article. Uses DOM methods only (no `innerHTML`) for bio text — XSS safe.
 - **Support modal** (`#support-backdrop`): triggered by "☕ Support" header button. Ko-fi link: `ko-fi.com/jasonsteltman`. Tiers: $5/$10/$25/$50 CAD. Recommend Feature button links to GitHub issues. No Stripe, no backend.
 - **Budget tab is commented out** — search for `<!-- BUDGET TAB:` and `<!-- BUDGET PANEL:` to re-enable. All JS + data is intact.
+- **Voting record section** in rep profile modal: only visible for federal reps (`isFederal()` check). `toOpenParliamentSlug("Jane Smith")` → `"smith-jane"`. API endpoint: `GET https://api.openparliament.ca/votes/?politician_slug={slug}&format=json&limit=10`. Results paginated via `loadMoreVotes()` (offset increments by 10). Cache in `votingCache` (keyed by slug). Fails silently — hides section if API unreachable or slug not found. Vote descriptions are bilingual objects `{en: "...", fr: "..."}` — always use `.en` field.

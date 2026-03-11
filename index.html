@@ -429,6 +429,30 @@
     }
     .rep-profile-wiki-body { font-size: 0.78rem; color: var(--text-muted); line-height: 1.75; }
     .rep-profile-wiki-body p { margin-bottom: 0.75rem; }
+    .rep-profile-votes { margin-top: 1.5rem; }
+    .rp-vote-item {
+      display: flex; align-items: flex-start; gap: 0.65rem;
+      padding: 0.6rem 0; border-bottom: 1px solid var(--border);
+    }
+    .rp-vote-item:last-child { border-bottom: none; }
+    .rp-vote-badge {
+      flex-shrink: 0; font-size: 0.58rem; font-family: 'DM Mono', monospace;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      padding: 0.15rem 0.5rem; border-radius: 3px; margin-top: 0.1rem;
+    }
+    .rp-vote-badge.passed { background: rgba(74,200,100,0.15); color: #4ac864; }
+    .rp-vote-badge.failed { background: rgba(200,74,74,0.15); color: #c85454; }
+    .rp-vote-desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; }
+    .rp-vote-meta { font-size: 0.65rem; color: var(--text-muted); opacity: 0.65; margin-top: 0.25rem; }
+    .rp-votes-more {
+      display: block; width: 100%; margin-top: 0.75rem;
+      font-size: 0.68rem; font-family: 'DM Mono', monospace; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--accent); background: none;
+      border: 1px solid var(--accent-dim); border-radius: 4px; padding: 0.45rem 1rem;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .rp-votes-more:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+    .rp-votes-more:disabled { opacity: 0.5; cursor: default; }
     @media (max-width: 600px) {
       .rep-profile-layout { flex-direction: column; }
       .rep-profile-left { width: 100%; }
@@ -1773,6 +1797,11 @@
           <div class="rep-profile-section-label">About</div>
           <div class="rep-profile-wiki-body" id="rpModal-wiki-body"></div>
         </div>
+        <div class="rep-profile-votes" id="rpModal-votes" style="display:none">
+          <div class="rep-profile-section-label">Voting Record</div>
+          <div id="rpModal-votes-body"></div>
+          <button class="rp-votes-more" id="rpModal-votes-more" onclick="loadMoreVotes()" style="display:none">Load more →</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1986,6 +2015,9 @@
 
   const wikiCache = {};
   const wikidataCache = {};
+  const votingCache = {}; // keyed by openparliament slug
+  let _votesOffset = 0;
+  let _currentVoteSlug = null;
   let currentRepForProfile = null;
   let currentRep = null;
   let selectedLat = null;
@@ -2458,9 +2490,10 @@
     // Open modal
     document.getElementById('rep-profile-backdrop').classList.add('open');
 
-    // Fetch Wikipedia bio and Wikidata social links
+    // Fetch Wikipedia bio, Wikidata social links, and voting record (federal reps only)
     fetchWikiBio(rep);
     fetchWikidataSocials(rep);
+    fetchVotingRecord(rep);
   }
 
   async function fetchWikiBio(rep) {
@@ -2604,6 +2637,131 @@
     if (!e || e.target === document.getElementById('rep-profile-backdrop')) {
       document.getElementById('rep-profile-backdrop').classList.remove('open');
     }
+  }
+
+  // ── Voting Record (OpenParliament.ca) ────────────────────────────────────
+  // Converts "Jane Smith" → "smith-jane" (OpenParliament slug format)
+  // Converts "Mary Jane Smith" → "smith-mary" (OpenParliament: lastname-firstname, no middle names)
+  function toOpenParliamentSlug(name) {
+    const parts = name.trim().toLowerCase()
+      .replace(/[éèê]/g, 'e').replace(/[àâ]/g, 'a').replace(/[ùûü]/g, 'u')
+      .replace(/[îï]/g, 'i').replace(/[ôö]/g, 'o').replace(/ç/g, 'c')
+      .replace(/[^a-z\s-]/g, '').split(/\s+/).filter(Boolean);
+    if (parts.length < 2) return parts.join('-');
+    const first = parts[0];
+    const last  = parts[parts.length - 1];
+    return last + '-' + first;
+  }
+
+  async function fetchVotingRecord(rep) {
+    const votesEl = document.getElementById('rpModal-votes');
+    const bodyEl  = document.getElementById('rpModal-votes-body');
+    const moreBtn = document.getElementById('rpModal-votes-more');
+
+    if (!isFederal(rep)) { votesEl.style.display = 'none'; return; }
+
+    const slug = toOpenParliamentSlug(rep.name);
+    _currentVoteSlug = slug;
+    _votesOffset = 0;
+    votesEl.style.display = '';
+    moreBtn.style.display = 'none';
+    bodyEl.textContent = 'Loading votes…';
+
+    if (votingCache[slug]) {
+      renderVotes(bodyEl, moreBtn, votingCache[slug], false);
+      return;
+    }
+
+    try {
+      const url = 'https://api.openparliament.ca/votes/?politician_slug='
+        + encodeURIComponent(slug) + '&format=json&limit=10';
+      const res = await Promise.race([
+        fetch(url),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 6000))
+      ]);
+      const data = await res.json();
+      votingCache[slug] = data;
+      // Only render if the user hasn't switched to a different rep
+      if (currentRepForProfile && toOpenParliamentSlug(currentRepForProfile.name) === slug) {
+        renderVotes(bodyEl, moreBtn, data, false);
+      }
+    } catch (e) {
+      if (currentRepForProfile && toOpenParliamentSlug(currentRepForProfile.name) === slug) {
+        votesEl.style.display = 'none';
+      }
+    }
+  }
+
+  async function loadMoreVotes() {
+    if (!_currentVoteSlug) return;
+    const bodyEl     = document.getElementById('rpModal-votes-body');
+    const moreBtn    = document.getElementById('rpModal-votes-more');
+    const slugSnapshot = _currentVoteSlug; // guard: rep may change during await
+    _votesOffset += 10;
+    moreBtn.textContent = 'Loading…';
+    moreBtn.disabled = true;
+    try {
+      const url = 'https://api.openparliament.ca/votes/?politician_slug='
+        + encodeURIComponent(slugSnapshot) + '&format=json&limit=10&offset=' + _votesOffset;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (_currentVoteSlug !== slugSnapshot) return; // rep changed while fetching
+      renderVotes(bodyEl, moreBtn, data, true);
+    } catch (e) {
+      _votesOffset -= 10; // rollback so retry fetches the correct page
+      moreBtn.textContent = 'Load more →';
+      moreBtn.disabled = false;
+    }
+  }
+
+  function renderVotes(bodyEl, moreBtn, data, append) {
+    const items = data.objects || [];
+    if (!append) bodyEl.textContent = '';
+
+    if (!items.length && !append) {
+      bodyEl.textContent = 'No voting record found.';
+      moreBtn.style.display = 'none';
+      return;
+    }
+
+    items.forEach(vote => {
+      const item = document.createElement('div');
+      item.className = 'rp-vote-item';
+
+      const result = (vote.result || '').toLowerCase();
+      const badge = document.createElement('span');
+      badge.className = 'rp-vote-badge ' + (result === 'passed' ? 'passed' : 'failed');
+      badge.textContent = vote.result || '?';
+      item.appendChild(badge);
+
+      const info = document.createElement('div');
+      info.style.flex = '1';
+      info.style.minWidth = '0';
+
+      const desc = document.createElement('div');
+      desc.className = 'rp-vote-desc';
+      const rawDesc = vote.description;
+      desc.textContent = rawDesc
+        ? (typeof rawDesc === 'object' ? (rawDesc.en || rawDesc.fr || '') : rawDesc)
+        : ('Vote #' + vote.number);
+      info.appendChild(desc);
+
+      const meta = document.createElement('div');
+      meta.className = 'rp-vote-meta';
+      const metaParts = [];
+      if (vote.date) metaParts.push(vote.date);
+      if (vote.yea_total != null) metaParts.push('✓ ' + vote.yea_total + '  ✗ ' + vote.nay_total);
+      meta.textContent = metaParts.join(' · ');
+      info.appendChild(meta);
+
+      item.appendChild(info);
+      bodyEl.appendChild(item);
+    });
+
+    const hasMore = data.pagination && data.pagination.next_url;
+    moreBtn.style.display = hasMore ? '' : 'none';
+    moreBtn.textContent = 'Load more →';
+    moreBtn.disabled = false;
   }
 
   function rpModalCopyEmail() {
