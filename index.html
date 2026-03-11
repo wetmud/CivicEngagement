@@ -2531,8 +2531,10 @@
       el.textContent = 'Copied!';
       el.classList.add('copied');
       setTimeout(() => {
-        el.textContent = email;
-        el.classList.remove('copied');
+        if (currentRepForProfile && currentRepForProfile.email === email) {
+          el.textContent = email;
+          el.classList.remove('copied');
+        }
       }, 1500);
     }).catch(() => {});
   }
