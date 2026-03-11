@@ -10,7 +10,7 @@
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
     font-src https://fonts.gstatic.com;
     img-src 'self' data: https: https://*.basemaps.cartocdn.com https://*.tile.openstreetmap.org;
-    connect-src 'self' https://api.geoapify.com https://represent.opennorth.ca https://corsproxy.io https://api.anthropic.com;
+    connect-src 'self' https://api.geoapify.com https://represent.opennorth.ca https://corsproxy.io https://api.anthropic.com https://en.wikipedia.org;
     frame-ancestors 'none';
   "/>
   <!-- No data collection, no tracking, no cookies -->
@@ -348,6 +348,78 @@
       transition: border-color 0.2s, color 0.2s;
     }
     .support-recommend-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Rep Profile Modal ───────────────────────────────────── */
+    .rep-profile-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.65); backdrop-filter: blur(8px);
+      z-index: 200; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .rep-profile-backdrop.open { display: flex; }
+    .rep-profile-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 2rem; max-width: 820px; width: 100%;
+      max-height: 90vh; overflow-y: auto; position: relative;
+      animation: fadeUp 0.3s ease both;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.45);
+    }
+    .rep-profile-layout { display: flex; gap: 2rem; align-items: flex-start; }
+    .rep-profile-left {
+      width: 200px; flex-shrink: 0;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+    }
+    .rep-profile-photo-wrap { margin-bottom: 1rem; }
+    .rep-profile-photo {
+      width: 110px; height: 110px; border-radius: 50%;
+      object-fit: cover; object-position: center 15%;
+      border: 3px solid var(--accent); display: block;
+      box-shadow: 0 0 0 5px rgba(255,185,99,0.15), 0 10px 30px rgba(0,0,0,0.4);
+    }
+    :root.light .rep-profile-photo {
+      box-shadow: 0 0 0 5px rgba(104,47,237,0.12), 0 10px 30px rgba(0,0,0,0.15);
+    }
+    .rep-profile-name { font-family: 'DM Serif Display', serif; font-size: 1.25rem; margin-bottom: 0.25rem; line-height: 1.2; }
+    .rep-profile-role { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.5rem; line-height: 1.4; }
+    .rep-profile-party {
+      font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em;
+      background: rgba(255,185,99,0.12); border: 1px solid rgba(255,185,99,0.25);
+      border-radius: 20px; padding: 0.2rem 0.75rem; color: var(--accent);
+      margin-bottom: 0.9rem; display: inline-block;
+    }
+    :root.light .rep-profile-party { background: rgba(104,47,237,0.08); border-color: rgba(104,47,237,0.2); }
+    .rep-profile-social { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.35rem; margin-bottom: 1rem; }
+    .rep-profile-social a {
+      font-size: 0.62rem; color: var(--text-muted); text-decoration: none;
+      border: 1px solid var(--border); border-radius: 20px; padding: 0.18rem 0.55rem;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .rep-profile-social a:hover { color: var(--accent); border-color: var(--accent); background: rgba(255,185,99,0.08); }
+    .rep-profile-actions { display: flex; flex-direction: column; gap: 0.5rem; width: 100%; }
+    .rep-profile-actions .btn-primary,
+    .rep-profile-actions .btn-outline { width: 100%; text-align: center; }
+    .rep-profile-right { flex: 1; min-width: 0; }
+    .rep-profile-section-label {
+      font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--text-muted); margin-bottom: 0.65rem;
+      padding-bottom: 0.4rem; border-bottom: 1px solid var(--border);
+    }
+    .rep-profile-offices { margin-bottom: 1.25rem; }
+    .rep-profile-office-entry {
+      font-size: 0.75rem; color: var(--text-muted); line-height: 1.6;
+      padding: 0.75rem 0.9rem; background: var(--profile-bg);
+      border-radius: 10px; margin-bottom: 0.5rem;
+    }
+    .rep-profile-office-entry strong {
+      display: block; color: var(--text); font-size: 0.7rem;
+      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.25rem;
+    }
+    .rep-profile-wiki-body { font-size: 0.78rem; color: var(--text-muted); line-height: 1.75; }
+    .rep-profile-wiki-body p { margin-bottom: 0.75rem; }
+    @media (max-width: 600px) {
+      .rep-profile-layout { flex-direction: column; }
+      .rep-profile-left { width: 100%; }
+      .rep-profile-box { padding: 1.25rem; }
+    }
 
     /* ── API key modal ────────────────────────────────── */
     .apikey-backdrop {
@@ -1645,6 +1717,35 @@
   </div>
 </div>
 
+<!-- Rep Profile Modal -->
+<div class="rep-profile-backdrop" id="rep-profile-backdrop" onclick="closeRepProfile(event)">
+  <div class="rep-profile-box">
+    <button class="about-close" onclick="closeRepProfile()">✕</button>
+    <div class="rep-profile-layout">
+      <div class="rep-profile-left">
+        <div class="rep-profile-photo-wrap">
+          <img class="rep-profile-photo" id="rpModal-photo" src="" alt="" onerror="this.parentElement.style.display='none'">
+        </div>
+        <div class="rep-profile-name" id="rpModal-name"></div>
+        <div class="rep-profile-role" id="rpModal-role"></div>
+        <div class="rep-profile-party" id="rpModal-party"></div>
+        <div class="rep-profile-social" id="rpModal-social"></div>
+        <div class="rep-profile-actions">
+          <button class="btn-primary" id="rpModal-email-btn" onclick="rpModalWriteEmail()">✉ Write Email</button>
+          <a class="btn-outline" id="rpModal-profile-link" href="#" target="_blank">↗ Official Profile</a>
+        </div>
+      </div>
+      <div class="rep-profile-right">
+        <div class="rep-profile-offices" id="rpModal-offices"></div>
+        <div class="rep-profile-wiki" id="rpModal-wiki">
+          <div class="rep-profile-section-label">About</div>
+          <div class="rep-profile-wiki-body" id="rpModal-wiki-body"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- API Key Modal -->
 <div class="apikey-backdrop" id="apikey-backdrop">
   <div class="apikey-box">
@@ -1722,7 +1823,7 @@
   });
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeModal(); closeAbout(); closeSupport(); closeApiKeyModal(); }
+    if (e.key === 'Escape') { closeModal(); closeAbout(); closeSupport(); closeApiKeyModal(); closeRepProfile(); }
   });
 
   function claudeHeaders() {
@@ -1848,6 +1949,8 @@
     }
   }
 
+  const wikiCache = {};
+  let currentRepForProfile = null;
   let currentRep = null;
   let selectedLat = null;
   let selectedLon = null;
@@ -2231,6 +2334,159 @@
 
   function closeModal() {
     document.getElementById('modal-backdrop').classList.remove('open');
+  }
+
+  function openRepProfile(rep) {
+    currentRepForProfile = rep;
+
+    // Photo
+    const photoEl = document.getElementById('rpModal-photo');
+    if (rep.photo_url && /^https?:\/\//.test(rep.photo_url)) {
+      photoEl.src = escAttr(rep.photo_url);
+      photoEl.alt = escAttr(rep.name);
+      photoEl.parentElement.style.display = '';
+    } else {
+      photoEl.parentElement.style.display = 'none';
+    }
+
+    // Text fields — use textContent (XSS-safe)
+    document.getElementById('rpModal-name').textContent = rep.name || '';
+    document.getElementById('rpModal-role').textContent =
+      (rep.elected_office || '') + (rep.representative_set_name ? ' — ' + rep.representative_set_name : '');
+
+    const partyEl = document.getElementById('rpModal-party');
+    if (rep.party_name) {
+      partyEl.textContent = rep.party_name;
+      partyEl.style.display = '';
+    } else {
+      partyEl.style.display = 'none';
+    }
+
+    // Social links — reuse buildSocialLinks, strip the outer div wrapper
+    const socialHtml = buildSocialLinks(rep).replace('<div class="rep-social">', '').replace('</div>', '');
+    document.getElementById('rpModal-social').innerHTML = socialHtml;
+
+    // Action buttons
+    const emailBtn = document.getElementById('rpModal-email-btn');
+    emailBtn.style.display = rep.email ? '' : 'none';
+    const profileLink = document.getElementById('rpModal-profile-link');
+    if (rep.url && /^https?:\/\//.test(rep.url)) {
+      profileLink.href = escAttr(rep.url);
+      profileLink.style.display = '';
+    } else {
+      profileLink.style.display = 'none';
+    }
+
+    // Offices — use DOM methods (XSS-safe)
+    const officesEl = document.getElementById('rpModal-offices');
+    const offices = (rep.extra && rep.extra.offices) ? rep.extra.offices : [];
+    if (offices.length) {
+      officesEl.innerHTML = '';
+      const label = document.createElement('div');
+      label.className = 'rep-profile-section-label';
+      label.textContent = 'Contact & Offices';
+      officesEl.appendChild(label);
+      offices.forEach(o => {
+        const entry = document.createElement('div');
+        entry.className = 'rep-profile-office-entry';
+        if (o.name) {
+          const strong = document.createElement('strong');
+          strong.textContent = o.name;
+          entry.appendChild(strong);
+        }
+        if (o.postal) { entry.appendChild(document.createTextNode(o.postal)); entry.appendChild(document.createElement('br')); }
+        if (o.tel) { entry.appendChild(document.createTextNode('📞 ' + o.tel)); entry.appendChild(document.createElement('br')); }
+        if (o.fax) { entry.appendChild(document.createTextNode('Fax: ' + o.fax)); }
+        officesEl.appendChild(entry);
+      });
+      officesEl.style.display = '';
+    } else {
+      officesEl.innerHTML = '';
+      officesEl.style.display = 'none';
+    }
+
+    // Open modal
+    document.getElementById('rep-profile-backdrop').classList.add('open');
+
+    // Fetch Wikipedia bio
+    fetchWikiBio(rep);
+  }
+
+  async function fetchWikiBio(rep) {
+    const wikiEl = document.getElementById('rpModal-wiki');
+    const bodyEl = document.getElementById('rpModal-wiki-body');
+
+    bodyEl.textContent = 'Loading…';
+    wikiEl.style.display = '';
+
+    if (wikiCache[rep.name] !== undefined) {
+      if (wikiCache[rep.name]) {
+        renderWikiBio(bodyEl, wikiCache[rep.name].text, wikiCache[rep.name].title);
+      } else {
+        wikiEl.style.display = 'none';
+      }
+      return;
+    }
+
+    try {
+      const query = encodeURIComponent(rep.name + ' ' + (rep.elected_office || ''));
+      const searchRes = await Promise.race([
+        fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' + query + '&format=json&origin=*&srlimit=1'),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 3000))
+      ]);
+      const searchData = await searchRes.json();
+      const hits = searchData.query && searchData.query.search;
+      if (!hits || !hits.length) { wikiCache[rep.name] = null; wikiEl.style.display = 'none'; return; }
+
+      const pageTitle = hits[0].title;
+      const extractRes = await Promise.race([
+        fetch('https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=true&redirects=1&titles=' + encodeURIComponent(pageTitle) + '&format=json&origin=*'),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 3000))
+      ]);
+      const extractData = await extractRes.json();
+      const pages = extractData.query && extractData.query.pages;
+      const page = pages && Object.values(pages)[0];
+      const extract = page && page.extract;
+
+      if (!extract || extract.includes('may refer to')) { wikiCache[rep.name] = null; wikiEl.style.display = 'none'; return; }
+
+      // Strip all HTML tags — plain text only (no innerHTML injection)
+      const plain = extract.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+      const limited = plain.length > 600 ? plain.slice(0, 600).replace(/\s+\S*$/, '') + '…' : plain;
+
+      wikiCache[rep.name] = { text: limited, title: pageTitle };
+      renderWikiBio(bodyEl, limited, pageTitle);
+    } catch (e) {
+      wikiCache[rep.name] = null;
+      wikiEl.style.display = 'none';
+    }
+  }
+
+  function renderWikiBio(el, text, pageTitle) {
+    el.innerHTML = '';
+    const p = document.createElement('p');
+    p.textContent = text;
+    el.appendChild(p);
+    const link = document.createElement('a');
+    link.href = 'https://en.wikipedia.org/wiki/' + encodeURIComponent(pageTitle);
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = 'Read more on Wikipedia ↗';
+    link.style.cssText = 'font-size:0.68rem;color:var(--accent)';
+    el.appendChild(link);
+  }
+
+  function closeRepProfile(e) {
+    if (!e || e.target === document.getElementById('rep-profile-backdrop')) {
+      document.getElementById('rep-profile-backdrop').classList.remove('open');
+    }
+  }
+
+  function rpModalWriteEmail() {
+    if (currentRepForProfile) {
+      closeRepProfile();
+      openModal(currentRepForProfile);
+    }
   }
 
   async function generateEmail() {
