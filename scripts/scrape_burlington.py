@@ -21,10 +21,17 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
+import time
+
 import anthropic
 import pdfplumber
 import requests
+import urllib3
 from bs4 import BeautifulSoup
+
+# Suppress SSL warnings for the eSCRIBE municipal portal — its intermediate
+# cert is not in the GitHub Actions trust store but the site is a known source.
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ── Config ────────────────────────────────────────────────────────────────────
 
@@ -37,6 +44,7 @@ INDEX_FILE      = OUTPUT_DIR / "index.json"
 CLAUDE_MODEL    = "claude-sonnet-4-20250514"
 REQUEST_TIMEOUT = 30
 REQUEST_DELAY   = 2   # seconds between HTTP requests — be polite
+SSL_VERIFY      = False  # eSCRIBE cert chain not trusted by GH Actions runner
 
 HEADERS = {
     "User-Agent": "CivicConnect/1.0 (civic engagement tool; github.com/wetmud/CivicConnect)",
@@ -45,11 +53,9 @@ HEADERS = {
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
-import time
-
 def get(url: str, **kwargs) -> requests.Response:
     time.sleep(REQUEST_DELAY)
-    r = requests.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT, **kwargs)
+    r = requests.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT, verify=SSL_VERIFY, **kwargs)
     r.raise_for_status()
     return r
 
@@ -60,6 +66,7 @@ def post_json(url: str, payload: dict) -> dict:
         headers={**HEADERS, "Content-Type": "application/json"},
         json=payload,
         timeout=REQUEST_TIMEOUT,
+        verify=SSL_VERIFY,
     )
     r.raise_for_status()
     return r.json()
