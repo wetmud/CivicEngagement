@@ -802,14 +802,14 @@
       padding: 1.4rem 1.6rem;
       margin-bottom: 0.85rem;
       animation: fadeUp 0.4s ease both;
-      transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+      transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
     }
 
     .rep-card:hover {
-      border-color: var(--accent-dim);
-      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28), 0 0 0 1px var(--accent-dim);
-      transform: translateY(-2px);
+      border-color: var(--accent);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22), 0 0 0 1px var(--accent), 0 4px 16px color-mix(in srgb, var(--accent) 20%, transparent);
+      transform: translateY(-4px);
     }
 
     .rep-level {
@@ -1537,7 +1537,7 @@
     <button class="btn-about" onclick="openAbout()">About</button>
     <button class="btn-donate" onclick="openSupport()">☕ Support</button>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode">
-      <span class="theme-icon">☀️</span>
+      <span class="theme-icon">🌙</span>
     </button>
   </div>
 </header>
@@ -1911,7 +1911,8 @@
   const CORS_PROXY = 'https://corsproxy.io/?';
 
   // ── Theme toggle ──────────────────────────────────────────
-  let isDark = true;
+  let isDark = false;
+  document.documentElement.classList.add('light');
   function toggleTheme() {
     isDark = !isDark;
     document.documentElement.classList.toggle('light', !isDark);
