@@ -2507,7 +2507,7 @@
   async function fetchWikidataSocials(rep) {
     const name = rep.name;
     if (wikidataCache[name] !== undefined) {
-      renderModalSocials(rep, wikidataCache[name]);
+      if (currentRepForProfile === rep) renderModalSocials(rep, wikidataCache[name]);
       return;
     }
     try {
@@ -2517,9 +2517,9 @@
       const searchRes = await fetch(searchUrl);
       const searchData = await searchRes.json();
       const results = searchData.search || [];
-      if (\!results.length) {
+      if (!results.length) {
         wikidataCache[name] = {};
-        renderModalSocials(rep, {});
+        if (currentRepForProfile === rep) renderModalSocials(rep, {});
         return;
       }
 
@@ -2536,7 +2536,7 @@
         { prop: 'P2002', key: 'twitter',   base: 'https://twitter.com/' },
         { prop: 'P2003', key: 'instagram', base: 'https://instagram.com/' },
         { prop: 'P2013', key: 'facebook',  base: 'https://facebook.com/' },
-        { prop: 'P2397', key: 'youtube',   base: 'https://youtube.com/channel/' },
+        { prop: 'P2397', key: 'youtube',   base: 'https://youtube.com/channel/' }, // channel ID from Wikidata
         { prop: 'P6634', key: 'linkedin',  base: 'https://linkedin.com/in/' },
       ];
 
@@ -2552,10 +2552,10 @@
       }
 
       wikidataCache[name] = extra;
-      renderModalSocials(rep, extra);
+      if (currentRepForProfile === rep) renderModalSocials(rep, extra);
     } catch (e) {
       wikidataCache[name] = {};
-      renderModalSocials(rep, {});
+      if (currentRepForProfile === rep) renderModalSocials(rep, {});
     }
   }
 
