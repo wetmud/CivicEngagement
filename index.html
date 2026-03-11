@@ -230,6 +230,125 @@
       color: var(--on-accent);
     }
 
+    /* ── Support Modal ───────────────────────────────────────── */
+    .support-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
+      z-index: 200; align-items: flex-start; justify-content: center;
+      padding: 1.5rem 1rem; overflow-y: auto;
+    }
+    .support-backdrop.open { display: flex; }
+    .support-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 0; overflow: hidden;
+      max-width: 540px; width: 100%; position: relative;
+      animation: fadeUp 0.3s ease both;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.45);
+      margin: auto;
+    }
+
+    .support-hero {
+      padding: 2.5rem 2rem 2rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .support-hero h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.6rem; font-weight: 400; margin-bottom: 0.6rem;
+    }
+    .support-hero-sub {
+      font-size: 0.78rem; color: var(--text-muted);
+      line-height: 1.7; margin-bottom: 1.25rem; max-width: 380px; margin-left: auto; margin-right: auto;
+    }
+    .support-hero-actions { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
+
+    .support-cta {
+      display: inline-block; padding: 0.75rem 1.5rem;
+      background: var(--accent); color: var(--on-accent);
+      border-radius: 12px; font-family: 'DM Mono', monospace;
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em;
+      text-decoration: none; transition: background 0.2s, box-shadow 0.2s; font-weight: 500;
+    }
+    .support-cta:hover { background: var(--accent-dim); box-shadow: 0 4px 16px rgba(255,185,99,0.35); }
+    :root.light .support-cta:hover { box-shadow: 0 4px 16px rgba(104,47,237,0.3); }
+    .support-cta-outline {
+      display: inline-block; padding: 0.75rem 1.5rem;
+      border: 1px solid var(--border); color: var(--text);
+      border-radius: 12px; font-family: 'DM Mono', monospace;
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em;
+      text-decoration: none; transition: border-color 0.2s, color 0.2s;
+    }
+    .support-cta-outline:hover { border-color: var(--accent); color: var(--accent); }
+    .support-cta-full {
+      display: block; width: calc(100% - 4rem); margin: 0 2rem 0.75rem;
+      text-align: center; padding: 0.85rem;
+    }
+
+    .support-why, .support-costs, .support-tiers-section {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .support-section-title {
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--text); font-weight: 600; margin-bottom: 0.75rem;
+    }
+    .support-why p, .support-costs-sub {
+      font-size: 0.76rem; color: var(--text-muted); line-height: 1.75; margin-bottom: 0.75rem;
+    }
+    .support-trust-row {
+      display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;
+    }
+    .support-trust-row span {
+      font-size: 0.65rem; color: var(--text-muted);
+      border: 1px solid var(--border); border-radius: 20px;
+      padding: 0.15rem 0.65rem;
+    }
+
+    .support-cost-table { display: flex; flex-direction: column; gap: 0; }
+    .support-cost-row {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      font-size: 0.72rem; color: var(--text-muted);
+      padding: 0.85rem 0.9rem; background: var(--profile-bg);
+      border-radius: 8px; margin-bottom: 0.4rem; gap: 1rem;
+    }
+    .support-cost-name { color: var(--text); font-weight: 500; margin-bottom: 0.2rem; font-size: 0.73rem; }
+    .support-cost-desc { font-size: 0.66rem; color: var(--text-muted); }
+    .support-cost-val { color: var(--accent); font-weight: 500; white-space: nowrap; flex-shrink: 0; font-size: 0.72rem; }
+
+    .support-tiers { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+    .support-tier {
+      flex: 1; text-align: center; padding: 0.85rem 0.4rem;
+      border: 1px solid var(--border); border-radius: 12px;
+      font-family: 'DM Mono', monospace; color: var(--text);
+      text-decoration: none; transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+      display: flex; flex-direction: column; gap: 0.2rem;
+    }
+    .support-tier:hover { border-color: var(--accent); color: var(--accent); }
+    .support-tier-amount { font-size: 1.05rem; font-weight: 600; }
+    .support-tier-label { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .support-tier-featured {
+      border-color: var(--accent); color: var(--accent);
+      background: rgba(255,185,99,0.08);
+      box-shadow: 0 2px 10px rgba(255,185,99,0.15);
+    }
+    :root.light .support-tier-featured { background: rgba(104,47,237,0.07); box-shadow: 0 2px 10px rgba(104,47,237,0.1); }
+    .support-tier-featured .support-tier-label { color: var(--accent); }
+
+    .support-fine-print {
+      font-size: 0.62rem; color: var(--text-muted);
+      text-align: center; margin: 0 2rem 1rem; display: block;
+    }
+    .support-recommend-btn {
+      display: block; margin: 0 2rem 2rem;
+      text-align: center; padding: 0.7rem;
+      border: 1px solid var(--border); border-radius: 10px;
+      font-family: 'DM Mono', monospace; font-size: 0.7rem;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-muted); text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .support-recommend-btn:hover { border-color: var(--accent); color: var(--accent); }
+
     /* ── API key modal ────────────────────────────────── */
     .apikey-backdrop {
       display: none;
@@ -1289,7 +1408,7 @@
   <div class="header-right">
     <span class="tagline">Know who represents you 🍁</span>
     <button class="btn-about" onclick="openAbout()">About</button>
-    <a class="btn-donate" href="https://ko-fi.com/wetmud" target="_blank" rel="noopener">☕ Support</a>
+    <button class="btn-donate" onclick="openSupport()">☕ Support</button>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode">
       <span class="theme-icon">☀️</span>
     </button>
@@ -1436,9 +1555,93 @@
     </div>
     <div class="about-links">
       <a href="https://github.com/wetmud/CivicConnect" target="_blank" rel="noopener">GitHub ↗</a>
-      <a href="https://ko-fi.com/wetmud" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+      <a href="https://ko-fi.com/jasonsteltman" target="_blank" rel="noopener">☕ Buy me a coffee</a>
       <a href="https://github.com/wetmud/CivicConnect/issues/new" target="_blank" rel="noopener">Report a bug ↗</a>
     </div>
+  </div>
+</div>
+
+<!-- Support Modal -->
+<div class="support-backdrop" id="support-backdrop" onclick="closeSupport(event)">
+  <div class="support-box">
+    <button class="about-close" onclick="closeSupport()">✕</button>
+
+    <div class="support-hero">
+      <h2>Every Contribution Matters</h2>
+      <p class="support-hero-sub">Whether you give $5 or $50, you are helping build free, transparent civic engagement tools for Canadians.</p>
+      <div class="support-hero-actions">
+        <a class="support-cta" href="https://ko-fi.com/jasonsteltman" target="_blank" rel="noopener">☕ Support Now</a>
+        <a class="support-cta-outline" href="https://github.com/wetmud/CivicConnect/issues/new?template=feature_request.md&title=Feature+Request" target="_blank" rel="noopener">✦ Recommend a Feature</a>
+      </div>
+    </div>
+
+    <div class="support-why">
+      <div class="support-section-title">Why We Need Your Support</div>
+      <p>Most civic tools are buried in government websites, require you to know exactly who to call, or are locked behind paywalls. CivicConnect is different — it is free, open-source, and built for everyone. <strong>You are not the product.</strong> We do not sell your data, run ads, or track you across the internet.</p>
+      <p>We exist solely to make civic participation easier. If you value that, your support keeps it alive and growing.</p>
+      <div class="support-trust-row">
+        <span>No data sales</span>
+        <span>No tracking</span>
+        <span>No ads</span>
+        <span>Open source</span>
+      </div>
+    </div>
+
+    <div class="support-costs">
+      <div class="support-section-title">Running Costs</div>
+      <p class="support-costs-sub">We believe in complete transparency about how your support is used.</p>
+      <div class="support-cost-table">
+        <div class="support-cost-row">
+          <div>
+            <div class="support-cost-name">Hosting (GitHub Pages)</div>
+            <div class="support-cost-desc">Static hosting for the app — free forever</div>
+          </div>
+          <span class="support-cost-val">$0 / month</span>
+        </div>
+        <div class="support-cost-row">
+          <div>
+            <div class="support-cost-name">AI features (BYOK)</div>
+            <div class="support-cost-desc">You bring your own Anthropic API key — we pay nothing</div>
+          </div>
+          <span class="support-cost-val">$0 / month</span>
+        </div>
+        <div class="support-cost-row">
+          <div>
+            <div class="support-cost-name">Developer time &amp; future infrastructure</div>
+            <div class="support-cost-desc">Expanding coverage, adding features, building a better proxy</div>
+          </div>
+          <span class="support-cost-val">your support ☕</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="support-tiers-section">
+      <div class="support-section-title">Give What You Can</div>
+      <p class="support-costs-sub">One-time contribution. No recurring charges unless you choose.</p>
+      <div class="support-tiers">
+        <a class="support-tier" href="https://ko-fi.com/jasonsteltman" target="_blank" rel="noopener">
+          <span class="support-tier-amount">$5</span>
+          <span class="support-tier-label">A coffee</span>
+        </a>
+        <a class="support-tier" href="https://ko-fi.com/jasonsteltman" target="_blank" rel="noopener">
+          <span class="support-tier-amount">$10</span>
+          <span class="support-tier-label">A few hours</span>
+        </a>
+        <a class="support-tier support-tier-featured" href="https://ko-fi.com/jasonsteltman" target="_blank" rel="noopener">
+          <span class="support-tier-amount">$25</span>
+          <span class="support-tier-label">Popular ★</span>
+        </a>
+        <a class="support-tier" href="https://ko-fi.com/jasonsteltman" target="_blank" rel="noopener">
+          <span class="support-tier-amount">$50</span>
+          <span class="support-tier-label">A month of work</span>
+        </a>
+      </div>
+    </div>
+
+    <a class="support-cta support-cta-full" href="https://ko-fi.com/jasonsteltman" target="_blank" rel="noopener">☕ Support on Ko-fi →</a>
+    <p class="support-fine-print">All amounts in CAD. Payments processed securely by Ko-fi.</p>
+
+    <a class="support-recommend-btn" href="https://github.com/wetmud/CivicConnect/issues/new?template=feature_request.md&title=Feature+Request" target="_blank" rel="noopener">✦ Recommend a Feature</a>
   </div>
 </div>
 
@@ -1470,6 +1673,16 @@
   function closeAbout(e) {
     if (!e || e.target === document.getElementById('about-backdrop')) {
       document.getElementById('about-backdrop').classList.remove('open');
+    }
+  }
+
+  // ── Support modal ─────────────────────────────────────────
+  function openSupport() {
+    document.getElementById('support-backdrop').classList.add('open');
+  }
+  function closeSupport(e) {
+    if (!e || e.target === document.getElementById('support-backdrop')) {
+      document.getElementById('support-backdrop').classList.remove('open');
     }
   }
 
@@ -1506,6 +1719,10 @@
   document.getElementById('apikey-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') saveApiKey();
     if (e.key === 'Escape') closeApiKeyModal();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeModal(); closeAbout(); closeSupport(); }
   });
 
   function claudeHeaders() {
