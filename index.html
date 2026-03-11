@@ -406,6 +406,8 @@
       transition: color 0.2s, border-color 0.2s, background 0.2s;
     }
     .rep-profile-social a:hover { color: var(--accent); border-color: var(--accent); background: rgba(255,185,99,0.08); }
+    .rep-social-fallback { font-size: 0.72rem; color: var(--text-muted); text-decoration: none; border: 1px solid var(--border); border-radius: 4px; padding: 0.25rem 0.6rem; transition: color 0.15s, border-color 0.15s; }
+    .rep-social-fallback:hover { color: var(--accent); border-color: var(--accent); }
     .rep-profile-actions { display: flex; flex-direction: column; gap: 0.5rem; width: 100%; }
     .rep-profile-actions .btn-primary,
     .rep-profile-actions .btn-outline { width: 100%; text-align: center; }
@@ -2567,7 +2569,14 @@
     // buildSocialLinks() sanitizes all values via escAttr() internally
     const raw = buildSocialLinks(mergedRep);
     const socialHtml = raw.replace(/^<div class="rep-social">/, '').replace(/<\/div>$/, '');
-    document.getElementById('rpModal-social').innerHTML = socialHtml;
+    const el = document.getElementById('rpModal-social');
+    if (socialHtml.trim()) {
+      el.innerHTML = socialHtml;
+    } else {
+      const query = encodeURIComponent('"' + rep.name + '" ' + (rep.elected_office || '') + ' social media');
+      const href = 'https://www.google.com/search?q=' + query;
+      el.innerHTML = '<a href="' + escAttr(href) + '" target="_blank" rel="noopener noreferrer" class="rep-social-fallback">&#128269; Find on social media</a>';
+    }
   }
 
   function renderWikiBio(el, text, pageTitle) {
