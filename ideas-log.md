@@ -114,4 +114,24 @@ That's a product philosophy worth naming. It's not about engagement or growth ha
 
 ---
 
+---
+
+## Canadian House of the People (CivicConnect Phase 2)
+
+Inspired by houseofthepeople.com — UK direct democracy platform. Build the Canadian equivalent as a natural extension of CivicConnect.
+
+**What maps to Canada:**
+- Bills → LEGISinfo API (free, Parliament's official bill tracker) ✅
+- MP voting records → OpenParliament.ca (already using) ✅
+- MPs directory → Represent API (already using) ✅
+- Senate → OpenParliament has Senate data ✅
+- Laws → Justice Laws website (no clean API, scraping needed) ⚠️
+- Community polls + gap tracker → needs Supabase backend ❌ (Phase 3)
+
+**Strategy:** Build this as CivicConnect Phase 2, not a separate project. The foundation (rep lookup, ward map, email drafting) is already there.
+
+**Action item:** Reach out to House of the People founder before building — @HoTPOfficial on X, LinkedIn. Civic tech people share. He might collaborate, share API knowledge, or at minimum appreciate the heads up. Canada ≠ competition.
+
+---
+
 *Next session: buy civicengagement.ca + wire up custom domain in Cloudflare, or WorkerShield v1 scoping?*
