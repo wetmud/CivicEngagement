@@ -106,6 +106,11 @@ That's a product philosophy worth naming. It's not about engagement or growth ha
 
 ### Personal Site
 - [ ] **Root/tree visual idea** — explore a scrolling background where you're travelling down through the root system of a tree or plant. As you scroll the page, the roots grow/extend downward. Could be SVG animation or canvas. Distinctive, organic, fits the "growth" metaphor. Revisit this when working on the personal site.
+- [ ] **Install algorithmic-art skill** from https://github.com/travisvn/awesome-claude-skills when starting personal site work — useful for the root animation.
+
+### Claude / Workflow Setup
+- [ ] **Per-project Claude personas** — add a Tone & Personality section to each repo's CLAUDE.md so Claude behaves differently per project. CivicConnect = civic tech builder voice. Personal site = designer/creative voice. Future projects = whatever fits (marketing, product, etc.). As projects get more complex, could have sub-personas per folder (marketing, HR, dev).
+- [ ] **Learn more about Claude agents** — understand how agents work so we can set up smarter multi-agent workflows across projects.
 
 ---
 
