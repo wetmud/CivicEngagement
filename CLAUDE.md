@@ -3,6 +3,7 @@
 Free, open-source civic engagement tool for Canadians. Enter an address → get every elected official who represents you, nearby public services, ward boundaries on a map, city budget breakdowns with AI summaries, and one-click AI-drafted emails to representatives.
 
 **Live:** `civicconnect.jason-steltman.workers.dev`
+**Custom domain (purchased):** `civicengagement.ca` — bought on GoDaddy, needs DNS pointed to Cloudflare (add site in Cloudflare → change GoDaddy nameservers to Cloudflare NS → add CNAME/redirect in Cloudflare Worker routes)
 **Stack:** Single-file vanilla HTML/CSS/JS — no build step, no framework, no backend.
 
 ---
@@ -142,7 +143,7 @@ If no key is set, the UI prompts the user before any Claude feature is used.
 
 **Post-launch (informed by user feedback):**
 - [x] MP voting tracker — OpenParliament.ca, shown in rep profile modal (March 2026)
-- [ ] Custom domain (civicreach.ca)
+- [ ] Custom domain — `civicengagement.ca` purchased on GoDaddy; wire up by pointing GoDaddy NS to Cloudflare, then configure Worker route in Cloudflare dashboard
 - [ ] Fix meeting scraper → uncomment Meetings tab
 - [ ] Re-enable Budget tab (data + UI built, just commented out)
 - [ ] Replace `alert()` with toast notifications
