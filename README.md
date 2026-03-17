@@ -1,11 +1,11 @@
-# CivicConnect
+# Civic Engagement
 
 **Know who represents you. Contact them in under a minute.**
 
 Enter your Canadian address and instantly find every elected official who represents you — city councillor, regional rep, MPP, and MP. See your ward boundary on a map. Draft a real email with AI assistance. No account. No login. Nothing collected.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Live](https://img.shields.io/badge/live-civicconnect.jason--steltman.workers.dev-blue)](https://civicconnect.jason-steltman.workers.dev)
+[![Live](https://img.shields.io/badge/live-civicengagement.ca-blue)](https://civicengagement.ca)
 
 ---
 
@@ -16,9 +16,7 @@ Enter your Canadian address and instantly find every elected official who repres
 
 ## Try It Live
 
-**[civicconnect.jason-steltman.workers.dev](https://civicconnect.jason-steltman.workers.dev)**
-
-Custom domain coming: `civicengagement.ca`
+**[civicengagement.ca](https://civicengagement.ca)**
 
 ---
 
@@ -70,8 +68,8 @@ The API proxy runs on Cloudflare Workers (`civicconnect-proxy.jason-steltman.wor
 No build step. No dependencies to install.
 
 ```bash
-git clone https://github.com/wetmud/CivicConnect.git
-cd CivicConnect
+git clone https://github.com/wetmud/CivicEngagement.git
+cd CivicEngagement
 open index.html
 ```
 
@@ -92,13 +90,13 @@ I live in Burlington, Ontario. I couldn't tell you off the top of my head who my
 - [ ] Fix Burlington meeting scraper date parsing (pipeline is built, first summaries blocked on this)
 - [ ] Re-enable Budget tab (built and tested, currently commented out)
 - [ ] Re-enable federal representatives tab (code ready in comments)
-- [ ] Custom domain — `civicengagement.ca`
+- [ ] Fix Burlington meeting scraper date parsing
+- [ ] Re-enable Budget tab
 - [ ] Mobile layout polish
 - [ ] Expand council meeting summaries beyond Burlington
-- [ ] PWA manifest — makes the site installable on mobile (~20 lines)
 - [ ] Share a rep's contact info via URL
 
-Got an idea or found a bug? [Open an issue](https://github.com/wetmud/CivicConnect/issues) or submit a PR.
+Got an idea or found a bug? [Open an issue](https://github.com/wetmud/CivicEngagement/issues) or submit a PR.
 
 ---
 

@@ -49,7 +49,7 @@ SSL_VERIFY      = False  # eSCRIBE cert chain not trusted by GH Actions runner
 CALENDAR_URL = f"{ESCRIBE_BASE}/MeetingsCalendarView.aspx"
 
 HEADERS = {
-    "User-Agent": "CivicConnect/1.0 (civic engagement tool; github.com/wetmud/CivicConnect)",
+    "User-Agent": "CivicEngagement/1.0 (civic engagement tool; github.com/wetmud/CivicEngagement)",
     "Accept": "text/html, */*",
 }
 
