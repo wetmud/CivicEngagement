@@ -20,6 +20,11 @@
 
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>" />
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#ffb963">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CivicEngage">
 
   <!-- Open Graph / social sharing -->
   <meta property="og:type" content="website" />
@@ -3842,6 +3847,15 @@ Keep it under 120 words. Start with "Subject: " on the first line. End with "A $
   document.getElementById('modal-backdrop').addEventListener('click', e => {
     if (e.target === document.getElementById('modal-backdrop')) closeModal();
   });
+
+  // PWA service worker registration
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {
+        // SW registration failed silently — app still works
+      });
+    });
+  }
 
 </script>
 
