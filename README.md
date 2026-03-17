@@ -1,20 +1,50 @@
-# 🍁 CivicReach
+# CivicConnect
 
-**Find every elected official who represents your address — and contact them directly.**
+**Know who represents you. Contact them in under a minute.**
 
-CivicReach is a free, open civic tool for Canadians. Enter your address and instantly see who represents you at every level of government — from your city councillor up to your MPP. Write to them directly with AI-assisted email drafting. No account. No login. No data collected. Ever.
+Enter your Canadian address and instantly find every elected official who represents you — city councillor, regional rep, MPP, and MP. See your ward boundary on a map. Draft a real email with AI assistance. No account. No login. Nothing collected.
+
+[![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Live](https://img.shields.io/badge/live-civicconnect.jason--steltman.workers.dev-blue)](https://civicconnect.jason-steltman.workers.dev)
+
+---
+
+<!-- SCREENSHOT: Add a screenshot of the main UI here (address search + rep cards + ward map) -->
+<!-- Suggested: `docs/screenshot.png` — 1200x750px, showing dark mode with a rep result loaded -->
+
+---
+
+## Try It Live
+
+**[civicconnect.jason-steltman.workers.dev](https://civicconnect.jason-steltman.workers.dev)**
+
+Custom domain coming: `civicengagement.ca`
 
 ---
 
 ## Features
 
-- **Address autocomplete** — powered by Geoapify, Canadian addresses only
-- **Representatives tab** — finds your mayor, city councillor, regional rep, and MPP sorted from most local to provincial
-- **Nearby Services tab** — shows libraries, parks, hospitals, and schools within your area with distance from your address
-- **Ward map** — displays your ward or district boundary on an interactive map
-- **AI email drafting** — select an issue, describe it, and get a polished email drafted for you ready to send
-- **Light / Dark mode** — toggle between themes
-- **Zero data collection** — everything runs in your browser, nothing is stored or logged
+- **Address autocomplete** — Canadian addresses, powered by Geoapify
+- **All three levels of government** — municipal councillor, regional rep, MPP, and federal MP in one search
+- **Ward boundary map** — your riding or district drawn on an interactive map (Leaflet + GeoJSON)
+- **Representative profiles** — photo, contact info, social links, Wikipedia bio, and voting record for federal MPs
+- **Nearby public services** — libraries, parks, hospitals, and schools sorted by distance
+- **AI email drafting** — pick an issue, describe it, get a polished draft ready to send (uses your own Anthropic API key)
+- **Council meeting summaries** — Burlington council minutes scraped, summarized by Claude, and surfaced in-app (Burlington pilot — more cities coming)
+- **Light and dark mode** — toggle persists in localStorage
+- **Zero data collection** — no cookies, no accounts, no analytics, no backend database. Nothing you do here is stored anywhere
+
+---
+
+## How It Works
+
+1. You type your address — autocomplete narrows it to a valid Canadian location
+2. The app calls [OpenNorth's Represent API](https://represent.opennorth.ca) to look up every elected official at that coordinate
+3. Ward/riding boundaries are fetched as GeoJSON and drawn on the map
+4. You click a rep, read their profile, and optionally draft an email with Claude
+5. Everything happens in your browser. When you close the tab, it's gone
+
+The API proxy runs on Cloudflare Workers (`civicconnect-proxy.jason-steltman.workers.dev`) — it holds the Geoapify key server-side and handles CORS for the Represent API, so no secrets are exposed in the frontend.
 
 ---
 
@@ -22,73 +52,53 @@ CivicReach is a free, open civic tool for Canadians. Enter your address and inst
 
 | Layer | Tool |
 |---|---|
-| Frontend | Vanilla HTML / CSS / JavaScript — single file, no framework |
-| Address autocomplete & geocoding | [Geoapify API](https://www.geoapify.com) |
-| Representatives data | [Represent API](https://represent.opennorth.ca) by OpenNorth (free, open data) |
-| Ward boundaries | Represent API boundaries endpoint + GeoJSON |
+| Frontend | Vanilla HTML / CSS / JavaScript — single file, no framework, no build step |
+| Address autocomplete + geocoding | [Geoapify API](https://www.geoapify.com) |
+| Representatives + ward boundaries | [Represent API](https://represent.opennorth.ca) by OpenNorth (free, open data) |
+| MP voting records | [OpenParliament.ca API](https://api.openparliament.ca) (free, open data) |
+| Rep bios | Wikipedia REST API |
 | Map | [Leaflet.js](https://leafletjs.com) + CartoDB tiles |
-| AI email drafting | Anthropic Claude API |
-| CORS proxy | [corsproxy.io](https://corsproxy.io) (temporary — replace with own proxy before production) |
+| AI email drafting | Anthropic Claude (user-supplied API key, BYOK) |
+| API proxy / CORS | [Cloudflare Workers](https://workers.cloudflare.com) (free tier) |
+| Meeting scraper | Python + Playwright + pdfplumber + Claude, runs on GitHub Actions |
+| Hosting | GitHub Pages |
 
 ---
 
-## Getting Started
+## Run It Locally
 
-This project is a single HTML file. No build step, no dependencies to install.
+No build step. No dependencies to install.
 
-1. Clone or download the repo
-2. Open `index.html` in any browser
-3. Start searching
-
-### API Keys
-
-You will need a free [Geoapify API key](https://myprojects.geoapify.com). Replace the key in the HTML:
-
-```js
-const GEOAPIFY_KEY = 'your_key_here';
+```bash
+git clone https://github.com/wetmud/CivicConnect.git
+cd CivicConnect
+open index.html
 ```
 
-The Represent API is free and requires no key.
+The app will work for rep lookup and map features out of the box — those go through public APIs. For AI email drafting, you'll be prompted to enter your own [Anthropic API key](https://console.anthropic.com) when you first use that feature. It's stored in `sessionStorage` only and never leaves your browser.
 
-The AI email drafting feature requires an [Anthropic API key](https://console.anthropic.com). This should **not** be hardcoded in the frontend — see the security section below.
-
----
-
-### Production setup
-
-For production, replace the hardcoded Geoapify key and the public CORS proxy with a lightweight backend proxy. Recommended options:
-
-- **Cloudflare Workers** — free tier covers 100,000 requests/day, global edge network
-- **Vercel serverless functions** — also free to start
-
-The proxy holds your API keys server-side and forwards requests from the frontend. This prevents key exposure and allows rate limiting.
+If you want to run the full version with your own proxy (to protect a Geoapify key), deploy the included Cloudflare Worker and update the `PROXY_BASE` constant in `index.html`.
 
 ---
 
-## Security
+## Why I Built This
 
-- **Content Security Policy** is set via meta tag — only whitelisted domains can load resources
-- **No-referrer policy** prevents address data from leaking in HTTP headers
-- **No cookies, no localStorage, no sessions** — nothing persists between visits
-- **No analytics or tracking scripts** of any kind
-
-### Before going to production
-
-- [ ] Move Geoapify key to a backend proxy (Cloudflare Worker or Vercel function)
-- [ ] Replace `corsproxy.io` with your own proxy
-- [ ] Add per-IP rate limiting on your proxy
-- [ ] Point a custom domain at GitHub Pages
-- [ ] Review Anthropic API key handling
+I live in Burlington, Ontario. I couldn't tell you off the top of my head who my city councillor was, let alone how to reach them. That felt like a real problem — not just for me, but for everyone. Your representatives work for you, but the system makes it harder than it should be to figure out who they even are. I built this because the information exists and the connection should take seconds, not an afternoon of Googling.
 
 ---
 
-## Privacy
+## Roadmap
 
-CivicReach is built on a simple promise: **we collect nothing**.
+- [ ] Fix Burlington meeting scraper date parsing (pipeline is built, first summaries blocked on this)
+- [ ] Re-enable Budget tab (built and tested, currently commented out)
+- [ ] Re-enable federal representatives tab (code ready in comments)
+- [ ] Custom domain — `civicengagement.ca`
+- [ ] Mobile layout polish
+- [ ] Expand council meeting summaries beyond Burlington
+- [ ] PWA manifest — makes the site installable on mobile (~20 lines)
+- [ ] Share a rep's contact info via URL
 
-Addresses searched, representatives viewed, emails drafted — none of it is stored, logged, or transmitted to any server we control. Every operation happens in the user's browser and disappears when they leave.
-
-This is not just an ethical choice — it is a technical one. There is no database, no backend, no user accounts. There is nothing to breach.
+Got an idea or found a bug? [Open an issue](https://github.com/wetmud/CivicConnect/issues) or submit a PR.
 
 ---
 
@@ -98,34 +108,17 @@ This is not just an ethical choice — it is a technical one. There is no databa
 |---|---|---|
 | Canadian representatives | [OpenNorth Represent API](https://represent.opennorth.ca) | Open Data |
 | Ward / district boundaries | [OpenNorth Represent API](https://represent.opennorth.ca) | Open Data |
-| Address geocoding | [Geoapify](https://www.geoapify.com) | Free tier |
-| Nearby places | [Geoapify Places API](https://www.geoapify.com/places-api) | Free tier |
+| Federal MP voting records | [OpenParliament.ca](https://api.openparliament.ca) | Open Data |
+| Address geocoding + nearby places | [Geoapify](https://www.geoapify.com) | Free tier |
+| Rep bios | [Wikipedia REST API](https://www.mediawiki.org/wiki/API:REST_API) | CC BY-SA |
 | Map tiles | [CartoDB](https://carto.com/basemaps) via Leaflet | Free / attribution required |
-
----
-
-## Roadmap
-
-- [ ] Federal representatives tab (code already saved in comments, ready to enable)
-- [ ] US address support via Google Civic Information API
-- [ ] Cloudflare Worker proxy for API key security
-- [ ] Custom domain (civicreach.ca)
-- [ ] Mobile layout polish
-- [ ] Share a rep's contact info via link
-- [ ] Public issue tracker — anonymously surfaced local concerns by neighbourhood
-
----
-
-## Contributing
-
-This project is in early development. If you find a bug, have a feature idea, or want to contribute, open an issue or pull request.
 
 ---
 
 ## License
 
-MIT — free to use, modify, and distribute with attribution.
+MIT — free to use, modify, and distribute.
 
 ---
 
-*Built in Burlington, Ontario 🍁 — for Canadians who want to actually use their democracy.*
+*Built in Burlington, Ontario — for Canadians who want to actually use their democracy.*
