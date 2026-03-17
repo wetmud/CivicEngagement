@@ -1,0 +1,56 @@
+{
+  "date": "2020-12-31",
+  "meeting_type": "10.3.14 Confidential litigation update - October 1 to December 31, 2020 (L-06-21)",
+  "source_url": "https://burlingtonpublishing.escribemeetings.com/Meeting.aspx?Id=e3089a62-5ed6-4a7f-9b46-7933fa01c98c&Agenda=PostMinutes&lang=English",
+  "generated_at": "2026-03-17T12:01:51.760033+00:00",
+  "tldr": "Burlington's Corporate Services committee met for over 12 hours to discuss the 2021 operating budget, with two public delegations speaking on budget matters. The main budget item was deferred to a special meeting on February 25, while the committee also approved a COVID enforcement funding agreement with regional partners.",
+  "productive_minutes": 660,
+  "procedural_minutes": 75,
+  "items": [
+    {
+      "title": "Memorandum of Understanding for COVID enforcement funding",
+      "outcome": "Passed",
+      "vote": null,
+      "estimated_minutes": 15,
+      "notes": "Committee authorized the Mayor and City Clerk to negotiate and execute an agreement with regional municipalities for COVID-19 enforcement framework and one-time funding."
+    },
+    {
+      "title": "2021 budget multi-year simulation",
+      "outcome": "Received",
+      "vote": null,
+      "estimated_minutes": 30,
+      "notes": "Finance department report on multi-year budget projections was received and filed, with item scheduled for special council meeting on March 3."
+    },
+    {
+      "title": "2021 operating budget review and approval",
+      "outcome": "Deferred",
+      "vote": null,
+      "estimated_minutes": 480,
+      "notes": "The main 2021 operating budget item was referred to a special committee budget meeting on February 25 after hearing from two public delegations."
+    },
+    {
+      "title": "Motion to proceed into closed session - budget compensation matters",
+      "outcome": "Passed",
+      "vote": null,
+      "estimated_minutes": 5,
+      "notes": "Committee moved into closed session to discuss budget reductions related to compensation under labour relations provisions."
+    },
+    {
+      "title": "Motion to proceed into closed session - personnel and staffing matters",
+      "outcome": "Passed",
+      "vote": null,
+      "estimated_minutes": 5,
+      "notes": "Second closed session motion to discuss personal matters about employees and staffing requests related to budget items."
+    },
+    {
+      "title": "Information items - correspondence and delegation notes",
+      "outcome": "Received",
+      "vote": null,
+      "estimated_minutes": 10,
+      "notes": "Committee received and filed correspondence about City View Park and delegation notes from Lawson Hunter regarding the operating budget."
+    }
+  ],
+  "deferred": [
+    "2021 operating budget review and approval"
+  ]
+}
