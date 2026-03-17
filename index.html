@@ -2620,7 +2620,7 @@
       }
 
       const sorted = repData.objects.sort((a, b) => govLevel(a) - govLevel(b));
-      renderRepList('results-reps', sorted, 'Local & Provincial');
+      renderRepList('results-reps', sorted, 'Your Representatives');
 
     } catch (err) {
       document.getElementById('results-reps').innerHTML = `<div class="error-msg">Could not load representatives. Try again.</div>`;
