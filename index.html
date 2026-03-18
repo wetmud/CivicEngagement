@@ -39,8 +39,8 @@
   <meta name="twitter:description" content="Enter your Canadian address to find every elected official who represents you — city, provincial, and federal — plus nearby public services and one-click email drafting." />
   <meta name="twitter:image" content="https://civicengagement.ca/og-image.png" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha512-sA+zWATbFvwMAgNmx6mFnfOLMgI1PFEtFSNAGBbTFtFxiW19E3s45RVnxCXEH5+UtJtxuBYr6mWPIBaXmRyg==" crossorigin="anonymous"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" integrity="sha512-BwHfrr4c9kmRkLw6iXFdzcdWV/PGkVgiIyIWLLlTSXzWQzxuSg4DiQUCpauz/EWjgk5TYQqX/kvn9pG1NpYfqg==" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -2282,8 +2282,7 @@
     dropdown.innerHTML = results.slice(0, 6).map(r => {
       const label = r.formatted || r.address_line1 || 'Unknown';
       const city = r.city || r.county || r.state_district || '';
-      // escAttr for attribute positions, escHtml for text content — prevents XSS from API responses
-      return `<div class="autocomplete-item" data-lat="${r.lat}" data-lon="${r.lon}" data-city="${escAttr(city.toLowerCase())}" data-label="${escAttr(label)}">${escHtml(label)}</div>`;
+      return `<div class="autocomplete-item" data-lat="${r.lat}" data-lon="${r.lon}" data-city="${city.toLowerCase()}" data-label="${label.replace(/"/g, '&quot;')}">${label}</div>`;
     }).join('');
     dropdown.style.display = 'block';
     dropdown.querySelectorAll('.autocomplete-item').forEach(el => {
@@ -2641,14 +2640,6 @@
       .replace(/>/g, '&gt;');
   }
 
-  // Escape values inserted as text content in HTML
-  function escHtml(str) {
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-  }
-
   function buildSocialLinks(rep) {
     const extra = rep.extra || {};
     const links = [];
@@ -2689,9 +2680,9 @@
           <div class="rep-card-header">
             ${photoHtml}
             <div class="rep-info">
-              <div class="rep-level">${escHtml(rep.representative_set_name || 'Government')}</div>
-              <div class="rep-name">${escHtml(rep.name)}</div>
-              <div class="rep-role">${escHtml(rep.elected_office)}${rep.party_name ? ' · ' + escHtml(rep.party_name) : ''}</div>
+              <div class="rep-level">${rep.representative_set_name || 'Government'}</div>
+              <div class="rep-name">${rep.name}</div>
+              <div class="rep-role">${rep.elected_office}${rep.party_name ? ' · ' + rep.party_name : ''}</div>
             </div>
           </div>
           ${socialHtml}
