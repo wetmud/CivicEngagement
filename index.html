@@ -98,6 +98,8 @@
       --profile-bg: #f0ecf8;
     }
 
+    html { font-size: 18px; }
+
     body {
       background: var(--bg);
       color: var(--text);
@@ -1733,6 +1735,7 @@
   <div class="header-right">
     <span class="tagline">Know who represents you 🍁</span>
     <button class="btn-about" onclick="openAbout()">About</button>
+    <button class="btn-about" onclick="openTips()">💡 Tips</button>
     <button class="btn-donate" onclick="openSupport()">☕ Support</button>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode">
       <span class="theme-icon">🌙</span>
@@ -1847,18 +1850,16 @@
       <option value="housing">Housing / Affordability</option>
       <option value="other">Other</option>
     </select>
-    <label>Briefly describe the issue <span style="color:var(--text-muted)">(optional — AI will draft from this)</span></label>
+    <label>Briefly describe the issue</label>
     <input type="text" id="issue-detail" placeholder="e.g. large pothole on Maple Ave near the school" />
-    <div class="ai-generating" id="ai-status">
-      <div class="dot-pulse"><span></span><span></span><span></span></div>
-      Drafting your email...
-    </div>
     <label>Subject</label>
     <input type="text" id="email-subject" placeholder="Subject line" />
     <label>Email body</label>
-    <textarea id="email-body" placeholder="Your email will appear here..."></textarea>
+    <textarea id="email-body" placeholder="Write your message here..."></textarea>
+    <p style="font-size:0.72rem; color:var(--text-muted); margin: 0.5rem 0 0.75rem; line-height:1.6;">
+      💡 <strong>Tip:</strong> We recommend checking out our <button onclick="closeModal();openTips()" style="background:none;border:none;padding:0;color:var(--accent);cursor:pointer;font-size:inherit;font-family:inherit;text-decoration:underline;">Tips page</button> and using your favourite AI to help craft a constructive, civil message.
+    </p>
     <div class="modal-actions">
-      <button class="btn-outline" onclick="generateEmail()">✦ AI Draft</button>
       <button class="btn-primary" onclick="sendEmail()">Open in Mail →</button>
     </div>
   </div>
@@ -1904,8 +1905,8 @@
     <button class="about-close" onclick="closeSupport()">✕</button>
 
     <div class="support-hero">
-      <h2>Every Contribution Matters</h2>
-      <p class="support-hero-sub">Whether you give $5 or $50, you are helping build free, transparent civic engagement tools for Canadians.</p>
+      <h2>Keep It Running</h2>
+      <p class="support-hero-sub">Civic Engagement is free and always will be. Running costs have gone up — if you find it useful, a contribution goes a long way.</p>
       <div class="support-hero-actions">
         <a class="support-cta" href="https://ko-fi.com/jasonsteltman" target="_blank" rel="noopener">☕ Support Now</a>
         <a class="support-cta-outline" href="https://github.com/wetmud/CivicEngagement/issues/new?template=feature_request.md&title=Feature+Request" target="_blank" rel="noopener">✦ Recommend a Feature</a>
@@ -1937,15 +1938,15 @@
         </div>
         <div class="support-cost-row">
           <div>
-            <div class="support-cost-name">AI features (BYOK)</div>
-            <div class="support-cost-desc">You bring your own Anthropic API key — we pay nothing</div>
+            <div class="support-cost-name">Cloudflare proxy &amp; domain</div>
+            <div class="support-cost-desc">API proxy to protect keys, custom domain hosting</div>
           </div>
-          <span class="support-cost-val">$0 / month</span>
+          <span class="support-cost-val">~$40 / yr</span>
         </div>
         <div class="support-cost-row">
           <div>
-            <div class="support-cost-name">Developer time &amp; future infrastructure</div>
-            <div class="support-cost-desc">Expanding coverage, adding features, building a better proxy</div>
+            <div class="support-cost-name">Developer time &amp; future features</div>
+            <div class="support-cost-desc">Expanding coverage, adding AI drafting back, building new tools</div>
           </div>
           <span class="support-cost-val">your support ☕</span>
         </div>
@@ -1965,8 +1966,8 @@
           <span class="support-tier-label">A few hours</span>
         </a>
         <a class="support-tier support-tier-featured" href="https://ko-fi.com/jasonsteltman" target="_blank" rel="noopener">
-          <span class="support-tier-amount">$25</span>
-          <span class="support-tier-label">Popular ★</span>
+          <span class="support-tier-amount">$40</span>
+          <span class="support-tier-label">Covers a year ★</span>
         </a>
         <a class="support-tier" href="https://ko-fi.com/jasonsteltman" target="_blank" rel="noopener">
           <span class="support-tier-amount">$50</span>
@@ -2035,6 +2036,23 @@
   </div>
 </div>
 
+<!-- Tips Modal -->
+<div class="about-backdrop" id="tips-backdrop" onclick="closeTips(event)">
+  <div class="about-box" style="max-width:540px;">
+    <button class="about-close" onclick="closeTips()">✕</button>
+    <h2>✦ <em>Tips for Better Emails</em></h2>
+    <div class="about-byline">Get real responses from your representatives</div>
+    <div class="about-body">
+      <p><strong>Use AI to help write it.</strong> Copy your issue into ChatGPT, Claude, or any AI you like and ask it to draft a short, polite email. AI is genuinely good at this — it keeps the tone professional without being stiff.</p>
+      <p><strong>Give the AI context about your angle.</strong> Don't just say "write an email about housing." Tell it: who you are, what specifically bothers you, what outcome you want, and what tone feels right to you. The more context, the better the draft.</p>
+      <p><strong>Be specific, not emotional.</strong> "The pothole on Maple Ave has been there since October and I've reported it twice" is stronger than "the roads are terrible." Specific issues with dates and locations get escalated. Vague frustration gets filed.</p>
+      <p><strong>Ask for a response.</strong> End your email with something like: "I would appreciate a response on what steps are being taken and a rough timeline." It makes it harder to ignore.</p>
+      <p><strong>Got redirected or no response?</strong> This is common. If a rep says "that's not my jurisdiction," ask them to forward it to whoever is responsible and CC you. If you get no reply after 2 weeks, follow up once. A second message shows you're serious. After that, consider escalating to the next level of government.</p>
+      <p><strong>Keep a copy.</strong> Screenshot or save your sent email. If things escalate, having a paper trail matters.</p>
+    </div>
+  </div>
+</div>
+
 <footer>
   Powered by <a href="https://represent.opennorth.ca" target="_blank">Represent API</a> &amp; <a href="https://www.geoapify.com" target="_blank">Geoapify</a> &nbsp;·&nbsp; Built for civic engagement &nbsp;·&nbsp; 🔒 No data collected, ever
   <div style="margin-top:12px;">
@@ -2043,6 +2061,14 @@
 </footer>
 
 <script>
+  // ── Tips modal ────────────────────────────────────────────
+  function openTips() { document.getElementById('tips-backdrop').classList.add('open'); }
+  function closeTips(e) {
+    if (!e || e.target === document.getElementById('tips-backdrop')) {
+      document.getElementById('tips-backdrop').classList.remove('open');
+    }
+  }
+
   // ── About modal ───────────────────────────────────────────
   function openAbout() { document.getElementById('about-backdrop').classList.add('open'); }
   function closeAbout(e) {
@@ -2061,19 +2087,16 @@
     }
   }
 
-  // ── API key (BYOK) ────────────────────────────────────────
-  // Key lives in sessionStorage only — gone when tab closes.
+  // ── API key (BYOK) — DISABLED until funded ────────────────
+  /*
   let _pendingAiCallback = null;
-
   function getApiKey() { return sessionStorage.getItem('cc_apikey') || ''; }
-
   function requireApiKey(cb) {
     if (getApiKey()) { cb(); return; }
     _pendingAiCallback = cb;
     document.getElementById('apikey-backdrop').classList.add('open');
     setTimeout(() => document.getElementById('apikey-input').focus(), 50);
   }
-
   function saveApiKey() {
     const key = document.getElementById('apikey-input').value.trim();
     if (!key.startsWith('sk-ant-')) {
@@ -2084,22 +2107,15 @@
     closeApiKeyModal();
     if (_pendingAiCallback) { _pendingAiCallback(); _pendingAiCallback = null; }
   }
-
   function closeApiKeyModal() {
     document.getElementById('apikey-backdrop').classList.remove('open');
     document.getElementById('apikey-input').value = '';
     _pendingAiCallback = null;
   }
-
   document.getElementById('apikey-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') saveApiKey();
     if (e.key === 'Escape') closeApiKeyModal();
   });
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeModal(); closeAbout(); closeSupport(); closeApiKeyModal(); closeRepProfile(); }
-  });
-
   function claudeHeaders() {
     return {
       'Content-Type': 'application/json',
@@ -2108,6 +2124,11 @@
       'anthropic-dangerous-direct-browser-access': 'true'
     };
   }
+  */
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeModal(); closeAbout(); closeSupport(); closeTips(); closeRepProfile(); }
+  });
 
   // ── Privacy banner ───────────────────────────────────────
   function dismissPrivacy() {
@@ -3192,6 +3213,8 @@
     }
   }
 
+  // ── AI email drafting — DISABLED until funded ─────────────
+  /*
   async function generateEmail() {
     if (!currentRep) return;
     requireApiKey(() => _doGenerateEmail());
@@ -3234,6 +3257,7 @@ Do not include placeholders like [Your Name] — end with just "A Concerned Resi
       aiStatus.classList.remove('visible');
     }
   }
+  */
 
   function sendEmail() {
     if (!currentRep?.email) return alert('No email address available for this representative.');
