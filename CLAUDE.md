@@ -140,9 +140,18 @@ If no key is set, the UI prompts the user before any Claude feature is used.
 - [x] Social sharing meta tags (`og:*`, `twitter:card`, `meta description`)
 - [x] Favicon (🏛️ emoji SVG)
 
+**Completed (March 2026):**
+- [x] MP voting tracker — OpenParliament.ca, shown in rep profile modal
+- [x] Custom domain — civicengagement.ca live on Cloudflare Worker, HTTPS enforced
+- [x] Federal reps included in main results list (sorted to top by govLevel)
+- [x] PWA manifest + service worker + icons
+- [x] OG image for social sharing
+- [x] Security audit — XSS escaping, proxy allowlist confirmed, Geoapify key rotated
+- [x] Mobile audit — header overflow, tap targets, tablet breakpoint, 480px breakpoint
+- [x] Full rename from CivicConnect → Civic Engagement
+
 **Post-launch (informed by user feedback):**
-- [x] MP voting tracker — OpenParliament.ca, shown in rep profile modal (March 2026)
-- [ ] Custom domain — `civicengagement.ca` purchased on GoDaddy; wire up by pointing GoDaddy NS to Cloudflare, then configure Worker route in Cloudflare dashboard
+- [ ] **Leader contacts tab** — Premier (Doug Ford) + Prime Minister hard-coded with contact info, email drafting, cabinet links in profile modal. Not returned by Represent API — needs its own data.
 - [ ] Fix meeting scraper → uncomment Meetings tab
 - [ ] Re-enable Budget tab (data + UI built, just commented out)
 - [ ] Replace `alert()` with toast notifications
