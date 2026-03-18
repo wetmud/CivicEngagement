@@ -1113,6 +1113,72 @@
     }
     .courtesy-tip-body { font-size: 0.75rem; color: var(--text-muted); line-height: 1.65; }
 
+    /* ── Leaders tab ─────────────────────────────────────── */
+    .leaders-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    @media (max-width: 600px) {
+      .leaders-grid { grid-template-columns: 1fr; }
+    }
+    .leader-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      transition: border-color 0.15s;
+    }
+    .leader-card:hover { border-color: var(--accent); }
+    .leader-avatar {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: color-mix(in srgb, var(--accent) 15%, var(--surface));
+      border: 2px solid var(--border);
+      overflow: hidden; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; font-weight: 600; color: var(--accent);
+    }
+    .leader-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .leader-header { display: flex; gap: 0.9rem; align-items: center; }
+    .leader-meta { flex: 1; min-width: 0; }
+    .leader-title {
+      font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--accent); margin-bottom: 0.2rem;
+    }
+    .leader-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.1rem; line-height: 1.2; color: var(--text);
+    }
+    .leader-party {
+      font-size: 0.65rem; color: var(--text-muted); margin-top: 0.2rem;
+    }
+    .leader-contacts {
+      display: flex; flex-direction: column; gap: 0.3rem;
+      font-size: 0.68rem; color: var(--text-muted);
+    }
+    .leader-contacts a {
+      color: var(--text-muted); text-decoration: none;
+      transition: color 0.15s;
+    }
+    .leader-contacts a:hover { color: var(--accent); }
+    .leader-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.25rem; }
+    .leader-verified {
+      font-size: 0.6rem; color: var(--text-muted);
+      margin-top: auto; padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .leaders-note {
+      margin-top: 1rem; padding: 0.75rem 1rem;
+      background: color-mix(in srgb, var(--accent) 6%, var(--bg));
+      border-left: 2px solid var(--accent);
+      border-radius: 8px;
+      font-size: 0.68rem; color: var(--text-muted); line-height: 1.6;
+    }
+
     .services-section { margin-bottom: 1.75rem; }
 
     .services-category-header {
@@ -1790,17 +1856,20 @@
     <div class="tabs" id="search-tabs">
       <button class="tab-btn active" onclick="switchTab('reps', this)">Local &amp; Provincial</button>
       <button class="tab-btn" onclick="switchTab('services', this)">Nearby Services</button>
+      <button class="tab-btn" onclick="switchTab('leaders', this)">Leaders</button>
       <!-- MEETINGS TAB: re-enable once scraper date parsing is fixed and summaries exist -->
       <!-- <button class="tab-btn" data-short="Meetings" onclick="switchTab('meetings', this)"><span class="tab-long">Council Meetings</span></button> -->
       <!-- BUDGET TAB: re-enable by removing comment -->
       <!-- <button class="tab-btn" onclick="switchTab('budget', this)">City Budget</button> -->
-      <!-- FEDERAL TAB (saved for later): <button class="tab-btn" onclick="switchTab('federal', this)">Federal</button> -->
     </div>
     <div class="tab-panel active" id="tab-reps">
       <div id="results-reps"></div>
     </div>
     <div class="tab-panel" id="tab-services">
       <div id="results-services"></div>
+    </div>
+    <div class="tab-panel" id="tab-leaders">
+      <div id="results-leaders"><div class="loading"><div class="spinner"></div>Search an address to load leaders...</div></div>
     </div>
     <!-- MEETINGS PANEL: re-enable once scraper date parsing is fixed and summaries exist -->
     <!-- <div class="tab-panel" id="tab-meetings">
@@ -1931,13 +2000,6 @@
       <div class="support-cost-table">
         <div class="support-cost-row">
           <div>
-            <div class="support-cost-name">Hosting (GitHub Pages)</div>
-            <div class="support-cost-desc">Static hosting for the app — free forever</div>
-          </div>
-          <span class="support-cost-val">$0 / month</span>
-        </div>
-        <div class="support-cost-row">
-          <div>
             <div class="support-cost-name">Cloudflare proxy &amp; domain</div>
             <div class="support-cost-desc">API proxy to protect keys, custom domain hosting</div>
           </div>
@@ -1966,8 +2028,8 @@
           <span class="support-tier-label">A few hours</span>
         </a>
         <a class="support-tier support-tier-featured" href="https://ko-fi.com/jasonsteltman" target="_blank" rel="noopener">
-          <span class="support-tier-amount">$40</span>
-          <span class="support-tier-label">Covers a year ★</span>
+          <span class="support-tier-amount">$25</span>
+          <span class="support-tier-label">Popular ★</span>
         </a>
         <a class="support-tier" href="https://ko-fi.com/jasonsteltman" target="_blank" rel="noopener">
           <span class="support-tier-amount">$50</span>
@@ -2255,6 +2317,7 @@
   let selectedLat = null;
   let selectedLon = null;
   let selectedCity = '';
+  let selectedProvince = '';
   let autocompleteTimeout = null;
   let activeIndex = -1;
 
@@ -2309,7 +2372,8 @@
     dropdown.innerHTML = results.slice(0, 6).map(r => {
       const label = r.formatted || r.address_line1 || 'Unknown';
       const city = r.city || r.county || r.state_district || '';
-      return `<div class="autocomplete-item" data-lat="${r.lat}" data-lon="${r.lon}" data-city="${escAttr(city.toLowerCase())}" data-label="${escAttr(label)}">${escHtml(label)}</div>`;
+      const prov = r.state_code || '';
+      return `<div class="autocomplete-item" data-lat="${r.lat}" data-lon="${r.lon}" data-city="${escAttr(city.toLowerCase())}" data-prov="${escAttr(prov)}" data-label="${escAttr(label)}">${escHtml(label)}</div>`;
     }).join('');
     dropdown.style.display = 'block';
     dropdown.querySelectorAll('.autocomplete-item').forEach(el => {
@@ -2318,6 +2382,7 @@
         selectedLat = parseFloat(el.dataset.lat);
         selectedLon = parseFloat(el.dataset.lon);
         selectedCity = el.dataset.city || '';
+        selectedProvince = el.dataset.prov || '';
         hideDropdown();
         findAll();
       });
@@ -2560,6 +2625,7 @@
         lat = geoData.results[0].lat;
         lon = geoData.results[0].lon;
         geocodedCity = geoData.results[0].city || geoData.results[0].county || address;
+        selectedProvince = geoData.results[0].state_code || selectedProvince;
       }
 
       // ── Profile card ──
@@ -2573,6 +2639,9 @@
 
       // Init budget with detected city
       initBudgetTab(geocodedCity || address);
+
+      // Init leaders tab with detected province
+      initLeadersTab(selectedProvince);
 
       // Fetch ward boundary in parallel with everything else
       const [wardResult] = await Promise.all([
@@ -2609,6 +2678,7 @@
       selectedLat = null;
       selectedLon = null;
       selectedCity = '';
+      selectedProvince = '';
     }
   }
 
@@ -3649,6 +3719,72 @@ Do not include placeholders like [Your Name] — end with just "A Concerned Resi
     { icon: '📚', label: 'Community Services', amount: '—', source: '', context: `` },
     { icon: '💰', label: 'Overall Tax Summary', amount: '—', source: '', context: `` }
   ];
+
+  // ── Leaders tab ───────────────────────────────────────────
+  let _leadersData = null;
+
+  async function initLeadersTab(provinceCode) {
+    const el = document.getElementById('results-leaders');
+    if (!el) return;
+
+    if (!_leadersData) {
+      try {
+        const res = await fetch('data/leaders.json');
+        _leadersData = await res.json();
+      } catch {
+        el.innerHTML = '<div class="error-msg">Could not load leaders data.</div>';
+        return;
+      }
+    }
+
+    const federal = _leadersData.federal;
+    const prov = provinceCode ? _leadersData.provinces[provinceCode.toUpperCase()] : null;
+
+    let html = '<div class="leaders-grid">';
+    if (prov) html += renderLeaderCard(prov);
+    html += renderLeaderCard(federal);
+    html += '</div>';
+
+    if (!prov) {
+      html += `<div class="leaders-note">Search a Canadian address to show your provincial Premier alongside the Prime Minister.</div>`;
+    }
+    html += `<div class="leaders-note">Leader data is verified periodically. If something looks outdated, <a href="https://github.com/wetmud/CivicEngagement/issues/new" target="_blank" style="color:var(--accent)">let us know ↗</a>.</div>`;
+
+    el.innerHTML = html;
+  }
+
+  function renderLeaderCard(leader) {
+    const initials = leader.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    const avatarInner = leader.photo_url
+      ? `<img src="${escAttr(leader.photo_url)}" alt="${escAttr(leader.name)}" onerror="this.style.display='none'">`
+      : escHtml(initials);
+    const sinceYear = leader.since ? leader.since.slice(0, 4) : '';
+    const verifiedDate = leader.verified_at
+      ? new Date(leader.verified_at + 'T12:00:00').toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' })
+      : '';
+    const repObj = JSON.stringify({ name: leader.name, elected_office: leader.title, email: leader.email || '', representative_set_name: 'Canada' }).replace(/'/g, '&#39;');
+
+    return `<div class="leader-card">
+      <div class="leader-header">
+        <div class="leader-avatar">${avatarInner}</div>
+        <div class="leader-meta">
+          <div class="leader-title">${escHtml(leader.title)}</div>
+          <div class="leader-name">${escHtml(leader.name)}</div>
+          <div class="leader-party">${escHtml(leader.party)}${sinceYear ? ' · since ' + sinceYear : ''}</div>
+        </div>
+      </div>
+      <div class="leader-contacts">
+        ${leader.email ? `<span>✉ <a href="mailto:${escAttr(leader.email)}">${escHtml(leader.email)}</a></span>` : ''}
+        ${leader.phone ? `<span>📞 <a href="tel:${escAttr(leader.phone)}">${escHtml(leader.phone)}</a></span>` : ''}
+        ${leader.website ? `<span>🔗 <a href="${escAttr(leader.website)}" target="_blank" rel="noopener">${escHtml(leader.website.replace(/^https?:\/\//, ''))}</a></span>` : ''}
+      </div>
+      <div class="leader-actions">
+        ${leader.email ? `<button class="btn-primary" style="font-size:0.7rem;padding:0.45rem 0.9rem;" onclick='openModal(${repObj})'>✉ Write Email</button>` : ''}
+        ${leader.website ? `<a class="btn-outline" style="font-size:0.7rem;padding:0.45rem 0.9rem;" href="${escAttr(leader.website)}" target="_blank" rel="noopener">Website ↗</a>` : ''}
+      </div>
+      ${verifiedDate ? `<div class="leader-verified">✓ Verified ${verifiedDate}</div>` : ''}
+    </div>`;
+  }
 
   let currentCityKey = null;
   let currentYear = 2025;

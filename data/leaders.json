@@ -1,0 +1,167 @@
+{
+  "_instructions": {
+    "purpose": "Hard-coded leader data for the Leaders tab in Civic Engagement. Shows the Prime Minister and the provincial/territorial Premier for the user's detected province.",
+    "how_to_update": "Edit the relevant entry below. Change name, party, since, photo_url, email, phone, website. Then bump verified_at to today's date (YYYY-MM-DD). Commit — the site fetches this file at runtime so it goes live immediately.",
+    "claude_prompt": "I need to update the Civic Engagement leaders.json file. [LEADER NAME] is now the [TITLE] of [PROVINCE/CANADA], replacing [OLD NAME], effective [DATE]. Please update the relevant entry: set name to '[NAME]', party to '[PARTY]', since to '[YYYY-MM-DD]', and verified_at to today's date. Also update photo_url if you have a reliable government headshot URL, otherwise set it to null. Keep all other fields the same unless I specify otherwise.",
+    "photo_url_note": "Use official government portrait URLs where possible (e.g. pm.gc.ca, assembly websites). Set to null if unavailable — the UI shows initials as fallback.",
+    "verified_at_note": "This date is displayed in the UI so users know the data is current. Update it whenever you verify the entry is still accurate, even if nothing else changed."
+  },
+
+  "federal": {
+    "title": "Prime Minister of Canada",
+    "name": "Mark Carney",
+    "party": "Liberal",
+    "since": "2025-03-14",
+    "photo_url": null,
+    "email": "pm@pm.gc.ca",
+    "phone": "613-992-4211",
+    "website": "https://pm.gc.ca",
+    "verified_at": "2026-03-18"
+  },
+
+  "provinces": {
+    "ON": {
+      "title": "Premier of Ontario",
+      "name": "Doug Ford",
+      "party": "Progressive Conservative",
+      "since": "2018-06-29",
+      "photo_url": null,
+      "email": "doug.ford@pc.ola.org",
+      "phone": "416-325-1941",
+      "website": "https://www.ontario.ca/page/premier",
+      "verified_at": "2026-03-18"
+    },
+    "BC": {
+      "title": "Premier of British Columbia",
+      "name": "David Eby",
+      "party": "NDP",
+      "since": "2022-11-18",
+      "photo_url": null,
+      "email": "premier@gov.bc.ca",
+      "phone": "250-387-1715",
+      "website": "https://www2.gov.bc.ca/gov/content/governments/organizational-structure/premier-cabinet/premier",
+      "verified_at": "2026-03-18"
+    },
+    "AB": {
+      "title": "Premier of Alberta",
+      "name": "Danielle Smith",
+      "party": "United Conservative",
+      "since": "2022-10-11",
+      "photo_url": null,
+      "email": "premier@gov.ab.ca",
+      "phone": "780-427-2251",
+      "website": "https://www.alberta.ca/premier",
+      "verified_at": "2026-03-18"
+    },
+    "QC": {
+      "title": "Premier of Québec",
+      "name": "François Legault",
+      "party": "Coalition Avenir Québec",
+      "since": "2018-10-18",
+      "photo_url": null,
+      "email": "premier.ministre@mce.gouv.qc.ca",
+      "phone": "418-643-5321",
+      "website": "https://www.quebec.ca/premier-ministre",
+      "verified_at": "2026-03-18"
+    },
+    "MB": {
+      "title": "Premier of Manitoba",
+      "name": "Wab Kinew",
+      "party": "NDP",
+      "since": "2023-10-18",
+      "photo_url": null,
+      "email": "premier@leg.gov.mb.ca",
+      "phone": "204-945-3714",
+      "website": "https://www.gov.mb.ca/premier",
+      "verified_at": "2026-03-18"
+    },
+    "SK": {
+      "title": "Premier of Saskatchewan",
+      "name": "Scott Moe",
+      "party": "Saskatchewan Party",
+      "since": "2018-02-02",
+      "photo_url": null,
+      "email": "premier@gov.sk.ca",
+      "phone": "306-787-9433",
+      "website": "https://www.saskatchewan.ca/government/government-structure/premier",
+      "verified_at": "2026-03-18"
+    },
+    "NS": {
+      "title": "Premier of Nova Scotia",
+      "name": "Tim Houston",
+      "party": "Progressive Conservative",
+      "since": "2021-08-17",
+      "photo_url": null,
+      "email": "premier@novascotia.ca",
+      "phone": "902-424-6600",
+      "website": "https://novascotia.ca/exec_council/premier",
+      "verified_at": "2026-03-18"
+    },
+    "NB": {
+      "title": "Premier of New Brunswick",
+      "name": "Susan Holt",
+      "party": "Liberal",
+      "since": "2024-11-01",
+      "photo_url": null,
+      "email": "premier@gnb.ca",
+      "phone": "506-453-2144",
+      "website": "https://www2.gnb.ca/content/gnb/en/departments/executive_council_office/premier.html",
+      "verified_at": "2026-03-18"
+    },
+    "NL": {
+      "title": "Premier of Newfoundland and Labrador",
+      "name": "Andrew Furey",
+      "party": "Liberal",
+      "since": "2020-08-19",
+      "photo_url": null,
+      "email": "premier@gov.nl.ca",
+      "phone": "709-729-3570",
+      "website": "https://www.gov.nl.ca/exec/premier",
+      "verified_at": "2026-03-18"
+    },
+    "PE": {
+      "title": "Premier of Prince Edward Island",
+      "name": "Dennis King",
+      "party": "Progressive Conservative",
+      "since": "2019-04-23",
+      "photo_url": null,
+      "email": "premier@gov.pe.ca",
+      "phone": "902-368-4400",
+      "website": "https://www.princeedwardisland.ca/en/information/executive-council-office/premier-prince-edward-island",
+      "verified_at": "2026-03-18"
+    },
+    "YT": {
+      "title": "Premier of Yukon",
+      "name": "Ranj Pillai",
+      "party": "Liberal",
+      "since": "2022-12-19",
+      "photo_url": null,
+      "email": "premier@gov.yk.ca",
+      "phone": "867-667-5800",
+      "website": "https://yukon.ca/en/your-government/find-government-contact/office-premier",
+      "verified_at": "2026-03-18"
+    },
+    "NT": {
+      "title": "Premier of the Northwest Territories",
+      "name": "R.J. Simpson",
+      "party": "Independent (consensus government)",
+      "since": "2023-11-08",
+      "photo_url": null,
+      "email": "premier_minister@gov.nt.ca",
+      "phone": "867-767-9141",
+      "website": "https://www.gov.nt.ca/en/cabinet/premier",
+      "verified_at": "2026-03-18"
+    },
+    "NU": {
+      "title": "Premier of Nunavut",
+      "name": "P.J. Akeeagok",
+      "party": "Independent (consensus government)",
+      "since": "2021-11-17",
+      "photo_url": null,
+      "email": "premier@gov.nu.ca",
+      "phone": "867-975-5059",
+      "website": "https://gov.nu.ca/en/premier",
+      "verified_at": "2026-03-18"
+    }
+  }
+}

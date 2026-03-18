@@ -46,7 +46,9 @@ REQUEST_TIMEOUT = 30
 REQUEST_DELAY   = 2   # seconds between HTTP requests — be polite
 SSL_VERIFY      = False  # eSCRIBE cert chain not trusted by GH Actions runner
 
-CALENDAR_URL = f"{ESCRIBE_BASE}/MeetingsCalendarView.aspx"
+def _calendar_url_for_month(year: int, month: int) -> str:
+    """eSCRIBE calendar accepts a StartDate param to load a specific month."""
+    return f"{ESCRIBE_BASE}/MeetingsCalendarView.aspx?StartDate={year}-{month:02d}-01"
 
 HEADERS = {
     "User-Agent": "CivicEngagement/1.0 (civic engagement tool; github.com/wetmud/CivicEngagement)",
@@ -77,44 +79,61 @@ def fetch_recent_meetings(limit: int = 5) -> list[dict]:
     print("Fetching meetings via headless browser (JS-rendered calendar)...")
     meetings_seen: dict[str, dict] = {}  # uuid → {id, title, date}
 
+    # Load current month + previous month to catch recent meetings regardless of when
+    # the scraper runs within the month. eSCRIBE defaults to current month only.
+    now = datetime.now(tz=timezone.utc)
+    months_to_check = []
+    for delta in (0, -1):
+        m = now.month + delta
+        y = now.year
+        if m < 1:
+            m += 12
+            y -= 1
+        months_to_check.append((y, m))
+
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
-        page = browser.new_page()
-        page.set_extra_http_headers(HEADERS)
 
-        # Load calendar and wait for meeting links to render
-        page.goto(CALENDAR_URL, wait_until="networkidle", timeout=30000)
+        for year, month in months_to_check:
+            url = _calendar_url_for_month(year, month)
+            print(f"  Loading calendar: {url}")
+            page = browser.new_page()
+            page.set_extra_http_headers(HEADERS)
+            page.goto(url, wait_until="networkidle", timeout=30000)
 
-        # Extract UUID + visible link text in one JS pass — the calendar renders
-        # anchor text like "Regular Meeting of Council\nJanuary 14, 2025"
-        link_data = page.eval_on_selector_all(
-            "a[href]",
-            "els => els.map(e => ({ href: e.getAttribute('href'), text: e.innerText }))"
-        )
-        for item in link_data:
-            href = item.get("href") or ""
-            text = (item.get("text") or "").strip()
-            m = UUID_RE.search(href)
-            if not m:
-                continue
-            uid = m.group(1)
-            if uid in meetings_seen:
-                continue
-            date_str = _parse_date_from_text(text)
-            title = text.split("\n")[0].strip() or "Burlington City Council"
-            if date_str:
-                meetings_seen[uid] = {"id": uid, "title": title, "date": date_str}
-                print(f"    ✓ {title} | {date_str}")
-            else:
-                # Store without date for fallback resolution
-                meetings_seen[uid] = {"id": uid, "title": title, "date": None}
+            # Extract UUID + visible link text in one JS pass — the calendar renders
+            # anchor text like "Regular Meeting of Council\nJanuary 14, 2025"
+            link_data = page.eval_on_selector_all(
+                "a[href]",
+                "els => els.map(e => ({ href: e.getAttribute('href'), text: e.innerText }))"
+            )
+            print(f"    Raw links found: {len(link_data)}")
+            for item in link_data:
+                href = item.get("href") or ""
+                text = (item.get("text") or "").strip()
+                m = UUID_RE.search(href)
+                if not m:
+                    continue
+                uid = m.group(1)
+                if uid in meetings_seen:
+                    continue
+                print(f"    → UUID {uid[:8]}… | raw text: {repr(text[:80])}")
+                date_str = _parse_date_from_text(text)
+                title = text.split("\n")[0].strip() or "Burlington City Council"
+                if date_str:
+                    meetings_seen[uid] = {"id": uid, "title": title, "date": date_str}
+                    print(f"      ✓ Parsed date: {date_str}")
+                else:
+                    print(f"      ✗ No date found in text")
+                    meetings_seen[uid] = {"id": uid, "title": title, "date": None}
 
-        # Fallback: scan raw HTML for any UUIDs we missed (JS-injected content)
-        html = page.content()
-        for m in UUID_RE.finditer(html):
-            uid = m.group(1)
-            if uid not in meetings_seen:
-                meetings_seen[uid] = {"id": uid, "title": "Burlington City Council", "date": None}
+            # Fallback: scan raw HTML for any UUIDs we missed (JS-injected content)
+            html = page.content()
+            for m in UUID_RE.finditer(html):
+                uid = m.group(1)
+                if uid not in meetings_seen:
+                    meetings_seen[uid] = {"id": uid, "title": "Burlington City Council", "date": None}
+            page.close()
 
         browser.close()
 
@@ -172,14 +191,19 @@ def _fetch_meeting_meta(meeting_id: str) -> tuple[str | None, str]:
         resp = get(url)
         soup = BeautifulSoup(resp.text, "html.parser")
 
-        # Grab all candidate text elements in priority order
+        # Only look at structured elements — the old approach of scanning 3000 chars
+        # of body text was catching copyright years, footers, etc. as false dates.
         candidates: list[str] = []
         for tag in ("title", "h1", "h2", "h3"):
             el = soup.find(tag)
             if el:
                 candidates.append(el.get_text(" ", strip=True))
-        # Also try the first 3000 chars of page text as a last resort
-        candidates.append(soup.get_text(" ", strip=True)[:3000])
+        # One extra pass: look for a <meta> description or OG title which often
+        # contains the meeting name and date on eSCRIBE pages.
+        for meta in soup.find_all("meta", attrs={"name": ["description", "og:title"]}):
+            content = meta.get("content", "").strip()
+            if content:
+                candidates.append(content)
 
         date_str: str | None = None
         title = "Burlington City Council"
