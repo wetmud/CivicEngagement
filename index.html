@@ -618,7 +618,7 @@
 
     .search-box {
       width: 100%;
-      max-width: 560px;
+      max-width: 680px;
       animation: fadeUp 0.6s 0.15s ease both;
       padding: 0 0.25rem;
     }
@@ -715,7 +715,7 @@
     /* ── Profile card ── */
     #profile-card {
       width: 100%;
-      max-width: 560px;
+      max-width: 680px;
       margin-top: 2rem;
       background: var(--profile-bg);
       border: 1px solid var(--border);
@@ -769,7 +769,7 @@
     }
 
     #ward-map {
-      height: 200px;
+      height: 260px;
       width: 100%;
       border-top: 1px solid var(--border);
     }
@@ -780,7 +780,7 @@
 
     #results-container {
       width: 100%;
-      max-width: 560px;
+      max-width: 680px;
       margin-top: 2rem;
       padding: 0 0.25rem;
     }
@@ -1120,6 +1120,33 @@
       border-left: 2px solid var(--accent);
       border-radius: 8px;
       font-size: 0.68rem; color: var(--text-muted); line-height: 1.6;
+    }
+
+    .meetings-empty {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .meetings-empty-icon { font-size: 2.5rem; line-height: 1; }
+    .meetings-empty-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.2rem;
+      color: var(--text);
+    }
+    .meetings-empty-body {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      max-width: 420px;
+    }
+    .meetings-empty-note {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      opacity: 0.7;
+      font-style: italic;
     }
 
     .services-section { margin-bottom: 1.75rem; }
@@ -1813,10 +1840,16 @@
     <div class="tab-panel" id="tab-leaders">
       <div id="results-leaders"><div class="loading"><div class="spinner"></div>Search an address to load leaders...</div></div>
     </div>
-    <!-- MEETINGS PANEL: re-enable once scraper date parsing is fixed and summaries exist -->
-    <!-- <div class="tab-panel" id="tab-meetings">
-      <div id="results-meetings"><div class="loading"><div class="spinner"></div>Loading meeting summaries…</div></div>
-    </div> -->
+    <div class="tab-panel" id="tab-meetings">
+      <div id="results-meetings">
+        <div class="meetings-empty">
+          <div class="meetings-empty-icon">🏛️</div>
+          <div class="meetings-empty-title">Burlington Council Meetings</div>
+          <div class="meetings-empty-body">AI-summarized council meeting minutes are coming soon. We're finishing the scraper that reads Burlington's eSCRIBE portal and turns agenda items into plain-language summaries.</div>
+          <div class="meetings-empty-note">Only Burlington is supported in the first version. Other municipalities will follow.</div>
+        </div>
+      </div>
+    </div>
     <!-- BUDGET PANEL: re-enable by removing comment -->
     <!-- <div class="tab-panel" id="tab-budget">
       <div class="budget-meta">
@@ -3733,20 +3766,33 @@ Do not include placeholders like [Your Name] — end with just "A Concerned Resi
 
   function buildLeaderCard(leader) {
     const rep = leaderToRep(leader);
-    const sinceYear = leader.since ? leader.since.slice(0, 4) : '';
-    const verifiedDate = leader.verified_at
-      ? new Date(leader.verified_at + 'T12:00:00').toLocaleDateString('en-CA', { year: 'numeric', month: 'short', year: 'numeric' })
-      : '';
 
-    // Build card using DOM methods (XSS-safe, matches rep card pattern)
     const card = document.createElement('div');
     card.className = 'rep-card';
     card.style.cursor = 'pointer';
     card.addEventListener('click', () => openRepProfile(rep));
 
-    // Header row
+    // Header — identical structure to renderRepList cards
     const header = document.createElement('div');
     header.className = 'rep-card-header';
+
+    // Photo placeholder — fetchWikiBio will fill src when profile is opened
+    // We create a hidden img here; if photo_url is set it shows, otherwise hidden
+    if (rep.photo_url) {
+      const photo = document.createElement('img');
+      photo.className = 'rep-photo';
+      photo.src = rep.photo_url;
+      photo.alt = leader.name;
+      photo.onerror = function() { this.style.display = 'none'; };
+      header.appendChild(photo);
+    }
+
+    const info = document.createElement('div');
+    info.className = 'rep-info';
+
+    const levelEl = document.createElement('div');
+    levelEl.className = 'rep-level';
+    levelEl.textContent = leader.title;
 
     const nameEl = document.createElement('div');
     nameEl.className = 'rep-name';
@@ -3754,50 +3800,17 @@ Do not include placeholders like [Your Name] — end with just "A Concerned Resi
 
     const roleEl = document.createElement('div');
     roleEl.className = 'rep-role';
-    roleEl.textContent = leader.title + (sinceYear ? ' · since ' + sinceYear : '');
+    roleEl.textContent = leader.title + (leader.party ? ' · ' + leader.party : '');
 
-    const partyEl = document.createElement('div');
-    partyEl.className = 'rep-party';
-    partyEl.textContent = leader.party || '';
-
-    header.appendChild(nameEl);
-    header.appendChild(roleEl);
-    header.appendChild(partyEl);
+    info.appendChild(levelEl);
+    info.appendChild(nameEl);
+    info.appendChild(roleEl);
+    header.appendChild(info);
     card.appendChild(header);
-
-    // Contact row
-    const meta = document.createElement('div');
-    meta.className = 'rep-meta';
-
-    if (leader.email) {
-      const emailSpan = document.createElement('span');
-      emailSpan.className = 'rep-email';
-      emailSpan.textContent = leader.email;
-      meta.appendChild(emailSpan);
-    }
-    if (leader.phone) {
-      const phoneSpan = document.createElement('span');
-      phoneSpan.className = 'rep-email';
-      phoneSpan.textContent = '📞 ' + leader.phone;
-      meta.appendChild(phoneSpan);
-    }
-    if (verifiedDate) {
-      const verSpan = document.createElement('span');
-      verSpan.style.cssText = 'font-size:0.6rem;color:var(--text-muted);';
-      verSpan.textContent = '✓ Verified ' + verifiedDate;
-      meta.appendChild(verSpan);
-    }
-    card.appendChild(meta);
 
     // Action buttons
     const actions = document.createElement('div');
     actions.className = 'rep-actions';
-
-    const profileBtn = document.createElement('button');
-    profileBtn.className = 'btn-outline';
-    profileBtn.textContent = 'View Profile';
-    profileBtn.addEventListener('click', e => { e.stopPropagation(); openRepProfile(rep); });
-    actions.appendChild(profileBtn);
 
     if (leader.email) {
       const emailBtn = document.createElement('button');
@@ -3806,6 +3819,12 @@ Do not include placeholders like [Your Name] — end with just "A Concerned Resi
       emailBtn.addEventListener('click', e => { e.stopPropagation(); openModal(rep); });
       actions.appendChild(emailBtn);
     }
+
+    const profileBtn = document.createElement('button');
+    profileBtn.className = 'btn-outline';
+    profileBtn.textContent = '↗ Profile';
+    profileBtn.addEventListener('click', e => { e.stopPropagation(); openRepProfile(rep); });
+    actions.appendChild(profileBtn);
 
     card.appendChild(actions);
     return card;
