@@ -30,10 +30,6 @@ import requests
 import urllib3
 from bs4 import BeautifulSoup
 
-# Suppress SSL warnings for the eSCRIBE municipal portal — its intermediate
-# cert is not in the GitHub Actions trust store but the site is a known source.
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 # ── Config ────────────────────────────────────────────────────────────────────
 
 ESCRIBE_BASE    = "https://burlingtonpublishing.escribemeetings.com"
@@ -44,7 +40,7 @@ INDEX_FILE      = OUTPUT_DIR / "index.json"
 CLAUDE_MODEL    = "claude-sonnet-4-20250514"
 REQUEST_TIMEOUT = 30
 REQUEST_DELAY   = 2   # seconds between HTTP requests — be polite
-SSL_VERIFY      = False  # eSCRIBE cert chain not trusted by GH Actions runner
+SSL_VERIFY      = True   # Use certifi bundle; set False only if cert issues recur in CI
 
 def _calendar_url_for_month(year: int, month: int) -> str:
     """eSCRIBE calendar accepts a StartDate param to load a specific month."""

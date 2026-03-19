@@ -39,8 +39,8 @@
   <meta name="twitter:description" content="Enter your Canadian address to find every elected official who represents you — city, provincial, and federal — plus nearby public services and one-click email drafting." />
   <meta name="twitter:image" content="https://civicengagement.ca/og-image.png" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha512-h9FcoyWjHcOcmEVkxOfTLnmZFWIH0iZhZT1H2TbOq55xssQGEJHEaIm+PgoUaZbRvQTNTluNOEfb1ZRy6D3BOw==" crossorigin="anonymous"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" integrity="sha512-puJW3E/qXDqYp9IfhAI54BJEaWIfloJ7JWs7OeD5i6ruC9JZL1gERT1wjtwXFlh7CjE7ZJ+/vcRZRkIYIb6p4g==" crossorigin="anonymous"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -2022,7 +2022,7 @@
 
 <!-- Email Modal -->
 <div class="modal-backdrop" id="modal-backdrop">
-  <div class="modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Write Email">
     <div class="modal-header">
       <span class="modal-title">Write to <span id="modal-rep-name">Your Rep</span></span>
       <button class="modal-close" onclick="closeModal()">✕</button>
@@ -2056,7 +2056,7 @@
 
 <!-- About Modal -->
 <div class="about-backdrop" id="about-backdrop" onclick="closeAbout(event)">
-  <div class="about-box">
+  <div class="about-box" role="dialog" aria-modal="true" aria-label="About Civic Engagement">
     <button class="about-close" onclick="closeAbout()">✕</button>
     <h2>About <em>Civic Engagement</em></h2>
     <div class="about-byline">A free civic engagement tool for Canadians</div>
@@ -2090,7 +2090,7 @@
 
 <!-- Support Modal -->
 <div class="support-backdrop" id="support-backdrop" onclick="closeSupport(event)">
-  <div class="support-box">
+  <div class="support-box" role="dialog" aria-modal="true" aria-label="Support Civic Engagement">
     <button class="about-close" onclick="closeSupport()">✕</button>
 
     <div class="support-hero">
@@ -2172,7 +2172,7 @@
 
 <!-- Rep Profile Modal -->
 <div class="rep-profile-backdrop" id="rep-profile-backdrop" onclick="closeRepProfile(event)">
-  <div class="rep-profile-box">
+  <div class="rep-profile-box" role="dialog" aria-modal="true" aria-label="Representative Profile">
     <button class="about-close" onclick="closeRepProfile()">✕</button>
     <div class="rep-profile-layout">
       <div class="rep-profile-left">
@@ -2205,7 +2205,7 @@
   </div>
 </div>
 
-<!-- API Key Modal -->
+<!-- API Key Modal — DISABLED (re-enable with BYOK block in JS)
 <div class="apikey-backdrop" id="apikey-backdrop">
   <div class="apikey-box">
     <h3>Enter your Anthropic API key</h3>
@@ -2222,10 +2222,11 @@
     </div>
   </div>
 </div>
+-->
 
 <!-- Tips Modal -->
 <div class="about-backdrop" id="tips-backdrop" onclick="closeTips(event)">
-  <div class="about-box" style="max-width:540px;">
+  <div class="about-box" role="dialog" aria-modal="true" aria-label="Tips for Better Emails" style="max-width:540px;">
     <button class="about-close" onclick="closeTips()">✕</button>
     <h2>✦ <em>Tips for Better Emails</em></h2>
     <div class="about-byline">Get real responses from your representatives</div>
@@ -2329,10 +2330,11 @@
   const CORS_PROXY = WORKER_URL + '/proxy?url=';
 
   // ── Theme toggle ──────────────────────────────────────────
-  let isDark = false;
-  document.documentElement.classList.add('light');
+  let isDark = localStorage.getItem('ce_theme') === 'dark';
+  document.documentElement.classList.toggle('light', !isDark);
   function toggleTheme() {
     isDark = !isDark;
+    localStorage.setItem('ce_theme', isDark ? 'dark' : 'light');
     document.documentElement.classList.toggle('light', !isDark);
     document.querySelector('.theme-icon').textContent = isDark ? '☀️' : '🌙';
     // Re-render map tiles and recolour ward layer when switching
@@ -2837,7 +2839,9 @@
 
   // ── Main search ───────────────────────────────────────────
   async function findAll() {
-    const address = input.value.trim();
+    let address = input.value.trim();
+    if (!address) return;
+    address = address.slice(0, 200).replace(/[\x00-\x1F\x7F]/g, '');
     if (!address) return;
     history.replaceState(null, '', '?q=' + encodeURIComponent(address));
 
@@ -2985,7 +2989,9 @@
     return String(str)
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
   function buildSocialLinks(rep) {
@@ -3024,7 +3030,7 @@
         : '';
       const socialHtml = buildSocialLinks(rep);
       html += `
-        <div class="rep-card" style="animation-delay:${i * 0.06}s;cursor:pointer" onclick='openRepProfile(${JSON.stringify(rep).replace(/'/g, "&#39;")})'>
+        <div class="rep-card" data-rep-idx="${i}" style="animation-delay:${i * 0.06}s;cursor:pointer" role="button" tabindex="0" aria-label="View profile: ${escAttr(rep.name)}">
           <div class="rep-card-header">
             ${photoHtml}
             <div class="rep-info">
@@ -3035,9 +3041,9 @@
           </div>
           ${socialHtml}
           <div class="rep-actions">
-            ${email ? `<button class="btn-primary" onclick='event.stopPropagation();openModal(${JSON.stringify(rep).replace(/'/g, "&#39;")})'>&#9993; Write Email</button>` : ''}
-            ${rep.url ? `<a class="btn-outline" href="${escAttr(rep.url)}" target="_blank" onclick="event.stopPropagation()">&#8599; Profile</a>` : ''}
-            <button class="btn-outline" onclick="event.stopPropagation();copyInfo('${escAttr(rep.name)}', '${escAttr(email)}')">Copy Info</button>
+            ${email ? `<button class="btn-primary rep-email-btn" data-rep-idx="${i}">&#9993; Write Email</button>` : ''}
+            ${rep.url ? `<a class="btn-outline" href="${escAttr(rep.url)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">&#8599; Profile</a>` : ''}
+            <button class="btn-outline rep-copy-btn" onclick="event.stopPropagation();copyInfo('${escAttr(rep.name)}', '${escAttr(email)}')">Copy Info</button>
           </div>
         </div>`;
     });
@@ -3049,7 +3055,17 @@
       <div class="courtesy-tip-body">Representatives respond best to respectful, specific, and good-faith messages. Focus on one issue, explain your perspective clearly, and stay courteous — it is significantly more effective than frustration or demands.</div>
     </div>
   </div>`;
-    document.getElementById(elId).innerHTML = html;
+    const el = document.getElementById(elId);
+    el.innerHTML = html;
+    el.querySelectorAll('.rep-card[data-rep-idx]').forEach(card => {
+      const idx = parseInt(card.dataset.repIdx, 10);
+      card.addEventListener('click', () => openRepProfile(reps[idx]));
+      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openRepProfile(reps[idx]); } });
+    });
+    el.querySelectorAll('.rep-email-btn[data-rep-idx]').forEach(btn => {
+      const idx = parseInt(btn.dataset.repIdx, 10);
+      btn.addEventListener('click', e => { e.stopPropagation(); openModal(reps[idx]); });
+    });
   }
 
   // ── Haversine ─────────────────────────────────────────────
@@ -3117,10 +3133,10 @@
             : '';
           const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name + ' ' + addr)}`;
           html += `
-            <a class="service-card" href="${mapsUrl}" target="_blank" style="animation-delay:${i * 0.05}s">
+            <a class="service-card" href="${mapsUrl}" target="_blank" rel="noopener noreferrer" style="animation-delay:${i * 0.05}s">
               <div>
-                <div class="service-name">${name}</div>
-                <div class="service-address">${addr}</div>
+                <div class="service-name">${escHtml(name)}</div>
+                <div class="service-address">${escHtml(addr)}</div>
               </div>
               ${dist ? `<div class="service-dist">${dist} away</div>` : ''}
             </a>`;
@@ -4174,10 +4190,10 @@ Do not include placeholders like [Your Name] — end with just "A Concerned Resi
       <div class="budget-card" style="animation-delay:${i * 0.05}s">
         <button class="budget-card-btn" onclick="toggleBudgetCard(this, ${i})">
           <div class="budget-card-left">
-            <span class="budget-card-icon">${cat.icon}</span>
-            <span class="budget-card-label">${cat.label}</span>
+            <span class="budget-card-icon">${escHtml(cat.icon)}</span>
+            <span class="budget-card-label">${escHtml(cat.label)}</span>
           </div>
-          <span class="budget-card-amount">${cat.amount}</span>
+          <span class="budget-card-amount">${escHtml(cat.amount)}</span>
           <span class="budget-card-chevron">▼</span>
         </button>
         <div class="budget-bubble" id="bubble-${i}"></div>
@@ -4265,17 +4281,20 @@ Respond ONLY in this exact JSON format (no markdown, no extra text):
   }
 
   function renderBubbleHTML(parsed, cat, sourceUrl) {
+    const safeTldr = escHtml(parsed.tldr || '');
+    const safeBreakdown = escHtml(parsed.breakdown || '').replace(/\n/g, '<br>');
+    const safeSource = sourceUrl && /^https?:\/\//.test(sourceUrl) ? escAttr(sourceUrl) : '';
     return `
       <div class="bubble-tldr">
         <strong>TL;DR</strong>
-        ${parsed.tldr}
+        ${safeTldr}
       </div>
       <div class="bubble-breakdown">
         <strong>Full Breakdown</strong>
-        ${parsed.breakdown}
+        ${safeBreakdown}
       </div>
       <div class="bubble-actions">
-        ${sourceUrl ? `<a class="bubble-source" href="${sourceUrl}" target="_blank">↗ Source Document</a>` : ''}
+        ${safeSource ? `<a class="bubble-source" href="${safeSource}" target="_blank" rel="noopener noreferrer">↗ Source Document</a>` : ''}
       </div>
     `;
   }
@@ -4350,10 +4369,6 @@ Keep it under 120 words. Start with "Subject: " on the first line. End with "A $
       alert('No council email found for this city yet. Copy your email and send it manually.');
     }
   }
-
-  document.getElementById('modal-backdrop').addEventListener('click', e => {
-    if (e.target === document.getElementById('modal-backdrop')) closeModal();
-  });
 
   // PWA service worker registration
   if ('serviceWorker' in navigator) {
