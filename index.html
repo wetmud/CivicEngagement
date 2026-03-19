@@ -1957,10 +1957,12 @@
       <button class="tab-btn active" onclick="switchTab('reps', this)">Local &amp; Provincial</button>
       <button class="tab-btn" onclick="switchTab('services', this)">Nearby Services</button>
       <button class="tab-btn" onclick="switchTab('leaders', this)">Leaders</button>
+      <!-- MEETINGS TAB: commented out until pipeline is ready
       <button class="tab-btn" data-short="Meetings" onclick="switchTab('meetings', this)"><span class="tab-long">Council Meetings</span></button>
+      -->
+      <!-- BUDGET TAB: commented out until built
       <button class="tab-btn" onclick="switchTab('budget', this)">City Budget</button>
-      <!-- MEETINGS TAB: re-enable full version by wiring loadMeetings() back in switchTab -->
-      <!-- BUDGET TAB: re-enable by wiring budget JS back in switchTab -->
+      -->
     </div>
     <div class="tab-panel active" id="tab-reps">
       <div id="results-reps"></div>
@@ -1971,6 +1973,7 @@
     <div class="tab-panel" id="tab-leaders">
       <div id="results-leaders"><div class="loading"><div class="spinner"></div>Search an address to load leaders...</div></div>
     </div>
+    <!-- MEETINGS PANEL: commented out until pipeline is ready
     <div class="tab-panel" id="tab-meetings">
       <div class="coming-soon-panel">
         <div class="coming-soon-icon">🏛️</div>
@@ -1980,6 +1983,8 @@
         <button class="coming-soon-request" onclick="requestFeature('meetings')">Request my city ↗</button>
       </div>
     </div>
+    -->
+    <!-- BUDGET PANEL: commented out until built
     <div class="tab-panel" id="tab-budget">
       <div class="coming-soon-panel">
         <div class="coming-soon-icon">📊</div>
@@ -1989,6 +1994,7 @@
         <button class="coming-soon-request" onclick="requestFeature('budget')">Request my city ↗</button>
       </div>
     </div>
+    -->
     <!-- BUDGET PANEL (full): re-enable by removing comment -->
     <!-- <div class="tab-panel" id="tab-budget">
       <div class="budget-meta">
@@ -2154,6 +2160,11 @@
 
     <a class="support-cta support-cta-full" href="https://ko-fi.com/jasonsteltman" target="_blank" rel="noopener">☕ Support on Ko-fi →</a>
     <p class="support-fine-print">All amounts in CAD. Payments processed securely by Ko-fi.</p>
+
+    <div style="margin-top:1.25rem;padding:1rem 1.25rem;background:color-mix(in srgb,var(--accent) 6%,var(--bg));border-radius:10px;border-left:3px solid var(--accent);">
+      <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--accent);margin-bottom:0.5rem;">Coming soon</div>
+      <p style="font-size:0.75rem;color:var(--text-muted);line-height:1.65;margin:0;">Two features are in active development: <strong style="color:var(--text)">Council Meeting Summaries</strong> (AI plain-language summaries of your council's decisions) and a <strong style="color:var(--text)">City Budget Explorer</strong>. Support helps fund the API costs and dev time to build and maintain them.</p>
+    </div>
 
     <a class="support-recommend-btn" href="https://github.com/wetmud/CivicEngagement/issues/new?template=feature_request.md&title=Feature+Request" target="_blank" rel="noopener">✦ Recommend a Feature</a>
   </div>
