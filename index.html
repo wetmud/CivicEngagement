@@ -960,6 +960,90 @@
     .meeting-source-link:hover, .meeting-share-btn:hover {
       background: color-mix(in srgb, var(--accent) 10%, transparent);
     }
+    /* ── Meeting card sections (extended renderer) ───────── */
+    .meeting-section {
+      margin: 1rem 0 0.5rem;
+    }
+    .meeting-section-heading {
+      font-size: 0.58rem;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      color: var(--text-muted);
+      margin-bottom: 0.55rem;
+      padding-bottom: 0.3rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .meeting-topic-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .meeting-topic-tag {
+      font-size: 0.65rem;
+      background: color-mix(in srgb, var(--accent) 10%, var(--bg));
+      color: var(--accent);
+      border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+      border-radius: 20px;
+      padding: 0.18rem 0.65rem;
+      line-height: 1.5;
+    }
+    .meeting-delegation {
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .meeting-delegation:last-child { border-bottom: none; }
+    .meeting-delegation-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.2rem;
+    }
+    .meeting-delegation-speaker {
+      font-size: 0.73rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .meeting-delegation-topic {
+      font-size: 0.62rem;
+      background: color-mix(in srgb, var(--accent) 8%, var(--bg));
+      color: var(--accent);
+      border-radius: 3px;
+      padding: 0.1rem 0.4rem;
+    }
+    .meeting-delegation-summary {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .meeting-bylaw-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.72rem;
+    }
+    .meeting-bylaw-row:last-child { border-bottom: none; }
+    .meeting-bylaw-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .meeting-bylaw-title {
+      flex: 1;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .meeting-next {
+      margin-top: 0.75rem;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    .meeting-next strong { color: var(--text); font-style: normal; }
+
     .meeting-empty {
       font-size: 0.8rem;
       color: var(--text-muted);
@@ -1147,6 +1231,50 @@
       color: var(--text-muted);
       opacity: 0.7;
       font-style: italic;
+    }
+
+    .coming-soon-panel {
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .coming-soon-icon { font-size: 2.2rem; line-height: 1; }
+    .coming-soon-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.15rem;
+      color: var(--text);
+    }
+    .coming-soon-body {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      max-width: 380px;
+    }
+    .coming-soon-note {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      opacity: 0.65;
+      font-style: italic;
+    }
+    .coming-soon-request {
+      margin-top: 0.5rem;
+      padding: 0.45rem 1.2rem;
+      font-size: 0.72rem;
+      font-family: 'DM Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border: 1px solid var(--accent-dim);
+      border-radius: 6px;
+      background: none;
+      color: var(--accent);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .coming-soon-request:hover {
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
     }
 
     .services-section { margin-bottom: 1.75rem; }
@@ -1828,8 +1956,9 @@
       <button class="tab-btn" onclick="switchTab('services', this)">Nearby Services</button>
       <button class="tab-btn" onclick="switchTab('leaders', this)">Leaders</button>
       <button class="tab-btn" data-short="Meetings" onclick="switchTab('meetings', this)"><span class="tab-long">Council Meetings</span></button>
-      <!-- BUDGET TAB: re-enable by removing comment -->
-      <!-- <button class="tab-btn" onclick="switchTab('budget', this)">City Budget</button> -->
+      <button class="tab-btn" onclick="switchTab('budget', this)">City Budget</button>
+      <!-- MEETINGS TAB: re-enable full version by wiring loadMeetings() back in switchTab -->
+      <!-- BUDGET TAB: re-enable by wiring budget JS back in switchTab -->
     </div>
     <div class="tab-panel active" id="tab-reps">
       <div id="results-reps"></div>
@@ -1841,16 +1970,24 @@
       <div id="results-leaders"><div class="loading"><div class="spinner"></div>Search an address to load leaders...</div></div>
     </div>
     <div class="tab-panel" id="tab-meetings">
-      <div id="results-meetings">
-        <div class="meetings-empty">
-          <div class="meetings-empty-icon">🏛️</div>
-          <div class="meetings-empty-title">Burlington Council Meetings</div>
-          <div class="meetings-empty-body">AI-summarized council meeting minutes are coming soon. We're finishing the scraper that reads Burlington's eSCRIBE portal and turns agenda items into plain-language summaries.</div>
-          <div class="meetings-empty-note">Only Burlington is supported in the first version. Other municipalities will follow.</div>
-        </div>
+      <div class="coming-soon-panel">
+        <div class="coming-soon-icon">🏛️</div>
+        <div class="coming-soon-title">Council Meeting Summaries</div>
+        <div class="coming-soon-body">We're building AI-powered plain-language summaries of council meetings so you can see what your representatives actually decided — without sitting through 5 hours of video.</div>
+        <div class="coming-soon-note">Available for Burlington first. Other cities added based on demand.</div>
+        <button class="coming-soon-request" onclick="requestFeature('meetings')">Request my city ↗</button>
       </div>
     </div>
-    <!-- BUDGET PANEL: re-enable by removing comment -->
+    <div class="tab-panel" id="tab-budget">
+      <div class="coming-soon-panel">
+        <div class="coming-soon-icon">📊</div>
+        <div class="coming-soon-title">City Budget Explorer</div>
+        <div class="coming-soon-body">See where your city's money goes — department by department — and draft a message to the right person when you have questions or concerns.</div>
+        <div class="coming-soon-note">Available for Burlington first. Other cities added based on demand.</div>
+        <button class="coming-soon-request" onclick="requestFeature('budget')">Request my city ↗</button>
+      </div>
+    </div>
+    <!-- BUDGET PANEL (full): re-enable by removing comment -->
     <!-- <div class="tab-panel" id="tab-budget">
       <div class="budget-meta">
         <span id="budget-city-label">📅 City Budget</span>
@@ -2410,7 +2547,7 @@
     card.className = 'meeting-card';
     card.style.animationDelay = (idx * 0.06) + 's';
 
-    // Header
+    // ── Header ──────────────────────────────────────────────
     const header = document.createElement('div');
     header.className = 'meeting-card-header';
     header.onclick = () => card.classList.toggle('open');
@@ -2420,7 +2557,7 @@
 
     const dateEl = document.createElement('div');
     dateEl.className = 'meeting-card-date';
-    dateEl.textContent = formatMeetingDate(s.date) + (s.meeting_type ? ' · ' + s.meeting_type : '');
+    dateEl.textContent = formatMeetingDate(s.date) + (s.meeting_type ? ' \u00b7 ' + s.meeting_type : '');
     meta.appendChild(dateEl);
 
     const titleEl = document.createElement('div');
@@ -2437,91 +2574,200 @@
 
     const chevron = document.createElement('div');
     chevron.className = 'meeting-card-toggle';
-    chevron.textContent = '▾';
+    chevron.textContent = '\u25be';
 
     header.appendChild(meta);
     header.appendChild(chevron);
     card.appendChild(header);
 
-    // Body
+    // ── Body ─────────────────────────────────────────────────
     const body = document.createElement('div');
     body.className = 'meeting-card-body';
 
-    // Time bar — values are integers from trusted JSON, safe to use directly
+    // Time bar — only shown for meetings with productive/procedural data
     const productive = s.productive_minutes || 0;
     const procedural = s.procedural_minutes || 0;
-    const total = productive + procedural || 1;
-    const pct = Math.round((productive / total) * 100);
+    if (productive || procedural) {
+      const total = productive + procedural || 1;
+      const pct = Math.round((productive / total) * 100);
+      const timeBar = document.createElement('div');
+      timeBar.className = 'meeting-time-bar';
+      const t1 = document.createElement('span');
+      t1.textContent = '\u23f1 ' + productive + 'm productive';
+      const track = document.createElement('div');
+      track.className = 'meeting-time-track';
+      const fill = document.createElement('div');
+      fill.className = 'meeting-time-fill';
+      fill.style.width = pct + '%';
+      track.appendChild(fill);
+      const t2 = document.createElement('span');
+      t2.textContent = procedural + 'm procedural';
+      timeBar.appendChild(t1); timeBar.appendChild(track); timeBar.appendChild(t2);
+      body.appendChild(timeBar);
+    }
 
-    const timeBar = document.createElement('div');
-    timeBar.className = 'meeting-time-bar';
-    const t1 = document.createElement('span');
-    t1.textContent = '\u23f1 ' + productive + 'm productive';
-    const track = document.createElement('div');
-    track.className = 'meeting-time-track';
-    const fill = document.createElement('div');
-    fill.className = 'meeting-time-fill';
-    fill.style.width = pct + '%';
-    track.appendChild(fill);
-    const t2 = document.createElement('span');
-    t2.textContent = procedural + 'm procedural';
-    timeBar.appendChild(t1);
-    timeBar.appendChild(track);
-    timeBar.appendChild(t2);
-    body.appendChild(timeBar);
+    const outcomeClasses = { passed: 'outcome-passed', failed: 'outcome-failed', defeated: 'outcome-failed', deferred: 'outcome-deferred', approved: 'outcome-passed', carried: 'outcome-passed', received: 'outcome-received', noted: 'outcome-noted', withdrawn: 'outcome-withdrawn' };
+    function outcomeBadge(text) {
+      const badge = document.createElement('span');
+      badge.className = 'meeting-outcome ' + (outcomeClasses[(text || '').toLowerCase()] || 'outcome-noted');
+      badge.textContent = text || '\u2014';
+      return badge;
+    }
+    function sectionEl(heading) {
+      const sec = document.createElement('div');
+      sec.className = 'meeting-section';
+      const h = document.createElement('div');
+      h.className = 'meeting-section-heading';
+      h.textContent = heading;
+      sec.appendChild(h);
+      return sec;
+    }
 
-    // Items table
-    if (s.items && s.items.length) {
+    // ── Topics ───────────────────────────────────────────────
+    if (s.topics && s.topics.length) {
+      const sec = sectionEl('Topics');
+      const tags = document.createElement('div');
+      tags.className = 'meeting-topic-tags';
+      s.topics.forEach(t => {
+        const tag = document.createElement('span');
+        tag.className = 'meeting-topic-tag';
+        tag.textContent = t;
+        tags.appendChild(tag);
+      });
+      sec.appendChild(tags);
+      body.appendChild(sec);
+    }
+
+    // ── Decisions (new format) ────────────────────────────────
+    if (s.decisions && s.decisions.length) {
+      const sec = sectionEl('Decisions & Votes');
       const table = document.createElement('table');
       table.className = 'meeting-items-table';
+      const thead = document.createElement('thead');
+      const hrow = document.createElement('tr');
+      ['Item', 'Outcome', 'Vote'].forEach(label => {
+        const th = document.createElement('th'); th.textContent = label; hrow.appendChild(th);
+      });
+      thead.appendChild(hrow); table.appendChild(thead);
+      const tbody = document.createElement('tbody');
+      s.decisions.forEach(d => {
+        const tr = document.createElement('tr');
+        const tdTitle = document.createElement('td');
+        tdTitle.style.maxWidth = '260px';
+        const strong = document.createElement('strong');
+        strong.style.cssText = 'display:block;color:var(--text);margin-bottom:0.2rem;font-size:0.73rem';
+        strong.textContent = d.item || '';
+        tdTitle.appendChild(strong);
+        const resultKey = (d.result || '').toLowerCase().split(' ')[0];
+        const outcome = outcomeClasses[resultKey] ? (resultKey.charAt(0).toUpperCase() + resultKey.slice(1)) : d.result || 'Noted';
+        const tdOutcome = document.createElement('td');
+        tdOutcome.appendChild(outcomeBadge(outcome));
+        const tdVote = document.createElement('td');
+        tdVote.textContent = d.vote || '\u2014';
+        tr.appendChild(tdTitle); tr.appendChild(tdOutcome); tr.appendChild(tdVote);
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      sec.appendChild(table);
+      body.appendChild(sec);
+    }
 
+    // ── Legacy items[] (old format fallback) ──────────────────
+    if (s.items && s.items.length && !(s.decisions && s.decisions.length)) {
+      const sec = sectionEl('Agenda Items');
+      const table = document.createElement('table');
+      table.className = 'meeting-items-table';
       const thead = document.createElement('thead');
       const hrow = document.createElement('tr');
       ['Item', 'Outcome', 'Vote', '~Time'].forEach(label => {
-        const th = document.createElement('th');
-        th.textContent = label;
-        hrow.appendChild(th);
+        const th = document.createElement('th'); th.textContent = label; hrow.appendChild(th);
       });
-      thead.appendChild(hrow);
-      table.appendChild(thead);
-
+      thead.appendChild(hrow); table.appendChild(thead);
       const tbody = document.createElement('tbody');
-      const outcomeClasses = { passed: 'outcome-passed', failed: 'outcome-failed', deferred: 'outcome-deferred', received: 'outcome-received', noted: 'outcome-noted', withdrawn: 'outcome-withdrawn' };
       s.items.forEach(item => {
         const tr = document.createElement('tr');
-        const badgeClass = outcomeClasses[(item.outcome || '').toLowerCase()] || 'outcome-noted';
-
         const tdTitle = document.createElement('td');
         tdTitle.style.maxWidth = '260px';
         const strong = document.createElement('strong');
         strong.style.cssText = 'display:block;color:var(--text);margin-bottom:0.2rem;font-size:0.73rem';
         strong.textContent = item.title || '';
         tdTitle.appendChild(strong);
-        if (item.notes) {
-          const notes = document.createTextNode(item.notes);
-          tdTitle.appendChild(notes);
-        }
-
+        if (item.notes) tdTitle.appendChild(document.createTextNode(item.notes));
         const tdOutcome = document.createElement('td');
-        const badge = document.createElement('span');
-        badge.className = 'meeting-outcome ' + badgeClass;
-        badge.textContent = item.outcome || '\u2014';
-        tdOutcome.appendChild(badge);
-
+        tdOutcome.appendChild(outcomeBadge(item.outcome));
         const tdVote = document.createElement('td');
         tdVote.textContent = item.vote || '\u2014';
-
         const tdTime = document.createElement('td');
         tdTime.textContent = item.estimated_minutes ? item.estimated_minutes + 'm' : '\u2014';
-
         tr.appendChild(tdTitle); tr.appendChild(tdOutcome); tr.appendChild(tdVote); tr.appendChild(tdTime);
         tbody.appendChild(tr);
       });
       table.appendChild(tbody);
-      body.appendChild(table);
+      sec.appendChild(table);
+      body.appendChild(sec);
     }
 
-    // Actions
+    // ── Delegations ───────────────────────────────────────────
+    if (s.delegations && s.delegations.length) {
+      const sec = sectionEl('Public Delegations (' + s.delegations.length + ')');
+      s.delegations.forEach(d => {
+        const row = document.createElement('div');
+        row.className = 'meeting-delegation';
+        const dh = document.createElement('div');
+        dh.className = 'meeting-delegation-header';
+        const speaker = document.createElement('span');
+        speaker.className = 'meeting-delegation-speaker';
+        speaker.textContent = d.speaker || 'Public';
+        dh.appendChild(speaker);
+        if (d.topic) {
+          const topic = document.createElement('span');
+          topic.className = 'meeting-delegation-topic';
+          topic.textContent = d.topic;
+          dh.appendChild(topic);
+        }
+        row.appendChild(dh);
+        if (d.summary) {
+          const sum = document.createElement('div');
+          sum.className = 'meeting-delegation-summary';
+          sum.textContent = d.summary;
+          row.appendChild(sum);
+        }
+        sec.appendChild(row);
+      });
+      body.appendChild(sec);
+    }
+
+    // ── Bylaws ────────────────────────────────────────────────
+    if (s.bylaws && s.bylaws.length) {
+      const sec = sectionEl('Bylaws');
+      s.bylaws.forEach(b => {
+        const row = document.createElement('div');
+        row.className = 'meeting-bylaw-row';
+        if (b.number) {
+          const num = document.createElement('span');
+          num.className = 'meeting-bylaw-num';
+          num.textContent = b.number;
+          row.appendChild(num);
+        }
+        const title = document.createElement('span');
+        title.className = 'meeting-bylaw-title';
+        title.textContent = b.title || '';
+        row.appendChild(title);
+        row.appendChild(outcomeBadge(b.result || 'Passed'));
+        sec.appendChild(row);
+      });
+      body.appendChild(sec);
+    }
+
+    // ── Next meeting ──────────────────────────────────────────
+    if (s.next_meeting) {
+      const next = document.createElement('div');
+      next.className = 'meeting-next';
+      next.innerHTML = '<strong>Next meeting:</strong> ' + escHtml(s.next_meeting);
+      body.appendChild(next);
+    }
+
+    // ── Actions ───────────────────────────────────────────────
     const actions = document.createElement('div');
     actions.className = 'meeting-card-actions';
     if (s.source_url && /^https?:\/\//.test(s.source_url)) {
@@ -2538,8 +2784,8 @@
     shareBtn.textContent = '\ud835\udd4f Share';
     shareBtn.onclick = () => shareMeetingOnX(s);
     actions.appendChild(shareBtn);
-
     body.appendChild(actions);
+
     card.appendChild(body);
     return card;
   }
@@ -2564,7 +2810,16 @@
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('tab-' + name).classList.add('active');
-    if (name === 'meetings') loadMeetings();
+    // if (name === 'meetings') loadMeetings(); // re-enable when pipeline is ready
+  }
+
+  function requestFeature(feature) {
+    const city = (typeof selectedCity !== 'undefined' && selectedCity) ? selectedCity : 'my city';
+    const labels = { meetings: 'Council Meeting Summaries', budget: 'City Budget Explorer' };
+    const label = labels[feature] || feature;
+    const body = 'Hi,\n\nI\'d love to see ' + label + ' on Civic Engagement for ' + city + '.\n\nThanks';
+    const mailto = 'mailto:jason.steltman@gmail.com?subject=' + encodeURIComponent('Feature Request: ' + label + ' for ' + city) + '&body=' + encodeURIComponent(body);
+    window.location.href = mailto;
   }
 
   // ── Main search ───────────────────────────────────────────

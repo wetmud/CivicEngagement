@@ -1,131 +1,96 @@
 {
   "date": "2026-02-17",
-  "meeting_type": "Regular Meeting of Council - February 17, 2026",
-  "source_url": "https://burlingtonpublishing.escribemeetings.com/Meeting.aspx?Id=f2f43022-2ed7-4a64-8828-7bf4e7fe3f2d&Agenda=PostMinutes&lang=English",
-  "generated_at": "2026-03-17T12:00:25.572466+00:00",
-  "tldr": "Burlington's Committee of the Whole approved a temporary two-year development charge exemption for residential construction, adopted a new climate action plan, and passed a comprehensive residential zoning bylaw after extensive public consultation. The meeting spanned two days with significant time spent on policy changes aimed at housing development and environmental goals.",
-  "productive_minutes": 480,
-  "procedural_minutes": 120,
-  "items": [
+  "municipality": "Burlington, Ontario",
+  "tldr": "Council debated temporarily eliminating development charges to boost housing construction, with significant procedural delays and public engagement concerns raised. The decision on development charges was deferred to a special meeting on March 2, 2026, and council acknowledged falling short on public notice procedures.",
+  "topics": [
+    "Temporary elimination of development charges for residential construction",
+    "Housing affordability and municipal revenue impacts",
+    "Development industry crisis and job losses",
+    "Heritage designation and property protection",
+    "Strong Mayor Powers and governance procedures",
+    "Council public engagement and agenda notification processes",
+    "Municipal policy review and oversight"
+  ],
+  "decisions": [
     {
-      "title": "2026 Halton Court Services business plan and budget",
-      "outcome": "Passed",
-      "vote": null,
-      "estimated_minutes": 5,
-      "notes": "Committee approved the 2026 budget for Halton Court Services as presented in the staff report."
+      "item": "Waive procedure bylaws to allow three late-registered delegates to speak",
+      "result": "Approved",
+      "vote": "7-0 unanimous"
     },
     {
-      "title": "Reserve fund request to strengthen municipal resilience",
-      "outcome": "Passed",
-      "vote": null,
-      "estimated_minutes": 5,
-      "notes": "Authorized transfer of $75,000 from Tax Rate Stabilization reserve fund to support Emergency and Continuity Program."
+      "item": "Defer all business items (excluding proclamations, recognitions, confidential items, and delegations) to special council meeting",
+      "result": "Approved",
+      "vote": "4-3 (Kearns, Nielsen, Stolti, Mayor Mead-Ward in favour; Galbraith, Sharman, Bentavanya opposed)"
     },
     {
-      "title": "Heritage Conservation Agreement for 461 Elizabeth Street",
-      "outcome": "Passed",
-      "vote": null,
-      "estimated_minutes": 3,
-      "notes": "Authorized Mayor and City Clerk to sign Heritage Conservation Agreement for Knox Presbyterian Church heritage grant application."
+      "item": "Decision on temporary elimination of development charges",
+      "result": "Deferred to March 2, 2026 special meeting",
+      "vote": "Vote scheduled for two weeks"
     },
     {
-      "title": "Heritage Conservation Agreement for 2411 Lakeshore Road",
-      "outcome": "Passed",
-      "vote": null,
-      "estimated_minutes": 3,
-      "notes": "Authorized Mayor and City Clerk to sign Heritage Conservation Agreement for heritage grant program application."
+      "item": "Confirm meeting minutes from January 26, 2026",
+      "result": "Approved",
+      "vote": "Unanimous"
     },
     {
-      "title": "Amendment to Procedure By-law regarding member speaking time",
-      "outcome": "Passed",
-      "vote": null,
-      "estimated_minutes": 15,
-      "notes": "Enacted by-law amendment to provide clarity on member speaking time and questions during council meetings."
-    },
-    {
-      "title": "Recreation Fee Assistance Program improvements 2025",
-      "outcome": "Received",
-      "vote": null,
-      "estimated_minutes": 5,
-      "notes": "Received information report on improvements made to the Recreation Fee Assistance Program in 2025."
-    },
-    {
-      "title": "Motion regarding City of Burlington leaving X social media",
-      "outcome": "Passed",
-      "vote": null,
-      "estimated_minutes": 15,
-      "notes": "Directed staff to report back in Q4 2026 on best use of social media platforms and consequences of leaving X platform."
-    },
-    {
-      "title": "Amendments to Council Code of Good Governance and Staff Relations Policy",
-      "outcome": "Passed",
-      "vote": null,
-      "estimated_minutes": 45,
-      "notes": "Directed comprehensive review of staff council relations policy including Strong Mayor Powers provisions and Council Code of Good Governance alignment with regional standards."
-    },
-    {
-      "title": "2026 Lakeshore Music & Arts Festival event overview",
-      "outcome": "Passed",
-      "vote": null,
-      "estimated_minutes": 25,
-      "notes": "Received festival information report and directed staff to support a community-driven parade concurrent with the festival."
-    },
-    {
-      "title": "Contingency Reserve status report",
-      "outcome": "Received",
-      "vote": null,
-      "estimated_minutes": 5,
-      "notes": "Received confidential information report on Contingency Reserve status as of December 31, 2025."
-    },
-    {
-      "title": "E-Scooter Micromobility Pilot Program update",
-      "outcome": "Received",
-      "vote": null,
-      "estimated_minutes": 15,
-      "notes": "Received information report on the status and results of the E-Scooter Micromobility Pilot Program."
-    },
-    {
-      "title": "Burlington Climate Plan: Taking Action to Reduce Community Greenhouse Gas Emissions",
-      "outcome": "Passed",
-      "vote": null,
-      "estimated_minutes": 30,
-      "notes": "Approved Burlington Climate Action Plan to reduce community greenhouse gas emissions after hearing from environmental groups."
-    },
-    {
-      "title": "Burlington Avenue and Ontario Street Heritage Conservation District Plan",
-      "outcome": "Passed",
-      "vote": null,
-      "estimated_minutes": 20,
-      "notes": "Approved by-law to designate study area as Heritage Conservation District and adopted the conservation district plan."
-    },
-    {
-      "title": "Heritage response to Bill 23 - Phase II shortlist of designation candidates",
-      "outcome": "Passed",
-      "vote": null,
-      "estimated_minutes": 15,
-      "notes": "Directed staff to retain consultant to assess eligibility of 10 properties for potential heritage designation under Ontario Heritage Act."
-    },
-    {
-      "title": "Options for temporary elimination of Development Charges",
-      "outcome": "Passed",
-      "vote": null,
-      "estimated_minutes": 60,
-      "notes": "Approved two-year residential Development Charges exemption for units with building permits showing active construction, despite failed amendments for provincial funding guarantees."
-    },
-    {
-      "title": "New Residential Zoning Bylaw - Final",
-      "outcome": "Passed",
-      "vote": null,
-      "estimated_minutes": 120,
-      "notes": "Approved and enacted comprehensive new Burlington Residential Zoning By-laws after statutory public meeting with extensive delegation input from developers, realtors, and community groups."
-    },
-    {
-      "title": "Information Items - Various correspondence and materials",
-      "outcome": "Received",
-      "vote": null,
-      "estimated_minutes": 5,
-      "notes": "Received 15 information items including legislative forecasts, delegation materials, and correspondence related to various agenda items."
+      "item": "By-law Number 11, 2026 - Confirm proceedings of council meeting of February 17, 2026",
+      "result": "Passed",
+      "vote": "7-0"
     }
   ],
-  "deferred": []
+  "delegations": [
+    {
+      "speaker": "Michael Collins-Williams, CEO, West End Home Builders Association",
+      "topic": "Development charge elimination",
+      "summary": "Urged council to approve temporary elimination of development charges, citing industry crisis with only 4 condo units sold in 2025 and construction job losses. Argued the revenue loss estimates are overly pessimistic and that eliminating charges would help make entry-level housing affordable for teachers, firefighters, and nurses."
+    },
+    {
+      "speaker": "Mike, Home Builders Association",
+      "topic": "Temporary elimination of development charges",
+      "summary": "Requested two-year temporary DC elimination to stimulate residential construction during industry crisis. Argued reduced charges would be passed to consumers, improving affordability, and emphasized need for provincial/federal funding support."
+    },
+    {
+      "speaker": "Jim Thompson",
+      "topic": "Development charges and Council governance",
+      "summary": "Opposed DC elimination, arguing it shifts costs to taxpayers through future property tax increases. Raised concerns that 63 of 79 city policies are overdue for review and called for better council accountability and policy oversight."
+    },
+    {
+      "speaker": "Shannon Gillies",
+      "topic": "Heritage designation",
+      "summary": "Advocated for heritage study of 1419 Ontario Street, then requested the property be removed from the study list in favour of another property in a high-density area at greater demolition risk."
+    },
+    {
+      "speaker": "Brandt Street property owner",
+      "topic": "Heritage designation and property protection",
+      "summary": "Resident advocated for heritage protection of their property citing demolition risk from condo development. Suggested expanding heritage character area designation to include multiple adjacent properties for equitable protection."
+    },
+    {
+      "speaker": "David Barker",
+      "topic": "Development charge elimination",
+      "summary": "Strongly opposed eliminating development charges, arguing it would subsidize developers' profits and shift costs to property taxpayers. Proposed deferring charges until 75% occupancy and called for a referendum on the ballot."
+    },
+    {
+      "speaker": "Lynn Crosby",
+      "topic": "Development charges, Strong Mayor Powers, and public engagement",
+      "summary": "Criticized the rushed decision-making process with inadequate public notice (meetings scheduled before a long weekend with daytime timing). Opposed subsidizing developers and called the use of Strong Mayor Powers disrespectful to council, staff, and citizens."
+    }
+  ],
+  "bylaws": [
+    {
+      "number": "11-2026",
+      "title": "Confirm the proceedings of council at the meeting of February 17, 2026",
+      "result": "Passed",
+      "vote": "7-0"
+    }
+  ],
+  "key_issues": {
+    "procedural_concerns": "Council acknowledged multiple public engagement failures: agenda released late Friday after delegation deadline, no confirmation emails sent for online delegation forms, and extended delegation window not publicly announced. Legal Services Commissioner confirmed council can proceed despite bylaw non-compliance.",
+    "development_charges_debate": "CFO provided supplementary financial report showing development charge elimination would cost the city $16-42 million. Council was split on whether temporary elimination would stimulate housing construction or simply reduce municipal revenue. The decision was deferred to allow more time for deliberation.",
+    "governance_concerns": "Councillor Nielsen raised concerns about Strong Mayor Powers bypassing normal committee process, forcing staff to work over weekend. Jim Thompson highlighted that 63 of 79 city policies are overdue for review.",
+    "recognition": "Heather Howell, M.M. Robinson High School teacher, recognized for receiving 2026 Governor General's History Award for Excellence in Teaching for her heritage garden project."
+  },
+  "next_meeting": "2026-03-02 (Special council meeting to vote on development charges and address deferred business items)",
+  "meeting_type": "Regular Meeting of Council",
+  "source_url": "https://burlingtonpublishing.escribemeetings.com/Meeting.aspx?Id=f2f43022-2ed7-4a64-8828-7bf4e7fe3f2d&Agenda=Agenda&lang=English",
+  "generated_at": "2026-03-18T00:00:00Z"
 }
