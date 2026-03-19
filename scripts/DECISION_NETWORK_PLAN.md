@@ -3,6 +3,10 @@
 > **Status:** New idea, not started. Proof-of-concept phase.
 > **Context:** Extension of the Burlington meeting pipeline into a structured, queryable network of civic decisions.
 
+> **Vibe:** The Pepe Silvia wall from It's Always Sunny. Charlie connects every piece of mail in the office into a grand unified theory — turns out he's right, there's just a lot of it. That's this. Documents, decisions, people, contracts, places — all connected, all real, just invisible until someone maps it. Except instead of hallucinating a shadow man, Jason is talking to his computer at 2am.
+
+![pepe silvia](../../charlie.jpg)
+
 ---
 
 ## The Core Shift
