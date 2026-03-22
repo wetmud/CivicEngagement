@@ -115,35 +115,15 @@ The scraper backend still uses Claude via `ANTHROPIC_API_KEY` GitHub Secret — 
 
 ## Known Issues & Technical Debt
 
-| Issue | Severity | Status |
-|-------|---------|--------|
-| Meeting scraper date parsing | Medium | Partially fixed 2026-03-18: loads current + previous month, verbose debug logging added, _fetch_meeting_meta tightened. Awaiting next Tuesday CI run to verify. |
-| eSCRIBE SSL cert not trusted in CI | Low | Fixed 2026-03-19: SSL_VERIFY = True, urllib3 warnings removed |
+| Issue | Severity | Notes |
+|-------|---------|-------|
+| Meeting scraper date parsing | Medium | Partially fixed 2026-03-18. Awaiting next Tuesday CI run to verify. |
 | No rate limiting | Low | Add per-session debounce or Cloudflare rate limiting |
-| No ARIA roles on modals | Low | Fixed 2026-03-19: role="dialog" aria-modal="true" added to all modals |
 | Budget city detection is naive string match | Low | Only matters when budget tab is re-enabled |
-| XSS in rep cards / service cards / budget bubbles | Critical | Fixed 2026-03-19: renderRepList refactored to data-attr+addEventListener; all API data escaped via escHtml() |
-| No SRI on Leaflet CDN | High | Fixed 2026-03-19: integrity hashes added |
-| Theme not persisted | Low | Fixed 2026-03-19: localStorage ce_theme key |
 
 ---
 
 ## Roadmap
-
-**Completed (March 2026):**
-- [x] Cloudflare Worker proxy (Geoapify + CORS)
-- [x] civicengagement.ca live, HTTPS, custom domain
-- [x] Social meta, favicon, PWA, OG image
-- [x] MP voting tracker, rep profiles, Wikipedia bios
-- [x] Federal reps in main results list
-- [x] Mobile + security audits
-- [x] Full rename CivicConnect → Civic Engagement
-- [x] AI/BYOK disabled — simplified for launch, Tips modal added
-- [x] Support modal updated ($40/yr cost, $25 featured tier)
-- [x] Font size bumped (html font-size: 18px)
-- [x] **Leaders tab** — all 13 provinces + PM, province auto-detected, Write Email works
-- [x] Meeting scraper debug logging + multi-month calendar loading
-- [x] **Full security + code quality audit (2026-03-19)** — XSS fixes, SRI hashes, ARIA roles, theme persistence, SW stale-while-revalidate, SSL fix in scraper (see audit-2026-03-19.md)
 
 **Next up:**
 - [ ] Verify scraper fix after next Tuesday CI run; fix date parsing if still broken

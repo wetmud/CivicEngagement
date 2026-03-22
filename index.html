@@ -228,7 +228,8 @@
       margin-bottom: 1.25rem;
     }
     .about-body p {
-      font-size: 0.82rem;
+      font-family: 'DM Serif Display', serif;
+      font-size: 0.88rem;
       color: var(--text-muted);
       line-height: 1.75;
       margin-bottom: 0.9rem;
@@ -557,21 +558,22 @@
 
     @media (max-width: 480px) {
       header {
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
-        text-align: center;
-        padding: 0.9rem 1rem;
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
         gap: 0.5rem;
+        flex-wrap: nowrap;
       }
+      .tagline { display: none; }
       .header-right {
-        justify-content: center;
-        flex-wrap: wrap;
+        justify-content: flex-end;
+        flex-wrap: nowrap;
         gap: 0.4rem;
       }
-      .logo { font-size: 1.25rem; }
-      .tagline { font-size: 0.72rem; letter-spacing: 0.06em; }
-      .theme-toggle { width: 36px; height: 36px; }
-      .btn-about, .btn-donate { padding: 0.55rem 0.9rem; font-size: 0.72rem; }
+      .logo { font-size: 1.2rem; }
+      .theme-toggle { width: 34px; height: 34px; }
+      .btn-about, .btn-donate { padding: 0.45rem 0.75rem; font-size: 0.68rem; }
     }
 
     main {
@@ -583,7 +585,10 @@
     }
 
     @media (max-width: 480px) {
-      main { padding: 2.5rem 1rem 2.5rem; }
+      main {
+        flex: 0 0 auto;
+        padding: 2rem 1rem 2rem;
+      }
     }
 
     .hero {
@@ -612,7 +617,7 @@
     }
 
     @media (max-width: 480px) {
-      .hero { margin-bottom: 2rem; }
+      .hero { margin-bottom: 1.5rem; }
       .hero p { font-size: 0.78rem; }
     }
 
@@ -624,8 +629,8 @@
     }
 
     @media (max-width: 480px) {
-      .search-box { padding: 0; }
-      #search-btn { padding: 0 1rem; font-size: 0.7rem; }
+      .search-box { padding: 0; overflow: hidden; }
+      #search-btn { padding: 0 1rem; font-size: 0.68rem; min-width: 90px; }
     }
 
     .autocomplete-wrapper { position: relative; }
@@ -680,7 +685,7 @@
     #search-btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; }
 
     .hint {
-      margin-top: 0.6rem;
+      margin-top: 0.75rem;
       font-size: 0.68rem;
       color: var(--text-muted);
     }
@@ -924,6 +929,68 @@
       line-height: 1.5;
     }
     .meeting-items-table tr:last-child td { border-bottom: none; }
+    /* Decision rows — richer layout replacing table for new-format summaries */
+    .decision-list { margin-bottom: 0.85rem; }
+    .decision-row {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .decision-row:last-child { border-bottom: none; }
+    .decision-row-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.3rem;
+    }
+    .decision-item-text {
+      font-size: 0.75rem;
+      color: var(--text);
+      line-height: 1.5;
+      flex: 1;
+      min-width: 0;
+      word-break: normal;
+      overflow-wrap: break-word;
+    }
+    .decision-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.25rem;
+      flex-shrink: 0;
+      max-width: 140px;
+    }
+    .decision-vote-count {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.67rem;
+      color: var(--text-muted);
+      text-align: right;
+      word-break: break-word;
+      white-space: normal;
+    }
+    .decision-vote-yes { color: #4ac864; font-weight: 600; }
+    .decision-vote-no  { color: #c85454; font-weight: 600; }
+    .decision-meta {
+      font-size: 0.66rem;
+      color: var(--text-muted);
+      margin-bottom: 0.3rem;
+    }
+    .decision-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+    }
+    .decision-tag {
+      font-size: 0.6rem;
+      padding: 1px 7px;
+      border-radius: 10px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      white-space: nowrap;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.03em;
+    }
     .meeting-outcome {
       display: inline-block;
       font-size: 0.58rem;
@@ -1122,7 +1189,7 @@
       height: 62px;
       border-radius: 50%;
       object-fit: cover;
-      object-position: center 15%;
+      object-position: center top;
       border: 2.5px solid var(--accent);
       flex-shrink: 0;
       background: var(--profile-bg);
@@ -1957,9 +2024,7 @@
       <button class="tab-btn active" onclick="switchTab('reps', this)">Local &amp; Provincial</button>
       <button class="tab-btn" onclick="switchTab('services', this)">Nearby Services</button>
       <button class="tab-btn" onclick="switchTab('leaders', this)">Leaders</button>
-      <!-- MEETINGS TAB: commented out until pipeline is ready
       <button class="tab-btn" data-short="Meetings" onclick="switchTab('meetings', this)"><span class="tab-long">Council Meetings</span></button>
-      -->
       <!-- BUDGET TAB: commented out until built
       <button class="tab-btn" onclick="switchTab('budget', this)">City Budget</button>
       -->
@@ -1973,17 +2038,9 @@
     <div class="tab-panel" id="tab-leaders">
       <div id="results-leaders"><div class="loading"><div class="spinner"></div>Search an address to load leaders...</div></div>
     </div>
-    <!-- MEETINGS PANEL: commented out until pipeline is ready
     <div class="tab-panel" id="tab-meetings">
-      <div class="coming-soon-panel">
-        <div class="coming-soon-icon">🏛️</div>
-        <div class="coming-soon-title">Council Meeting Summaries</div>
-        <div class="coming-soon-body">We're building AI-powered plain-language summaries of council meetings so you can see what your representatives actually decided — without sitting through 5 hours of video.</div>
-        <div class="coming-soon-note">Available for Burlington first. Other cities added based on demand.</div>
-        <button class="coming-soon-request" onclick="requestFeature('meetings')">Request my city ↗</button>
-      </div>
+      <div id="results-meetings"></div>
     </div>
-    -->
     <!-- BUDGET PANEL: commented out until built
     <div class="tab-panel" id="tab-budget">
       <div class="coming-soon-panel">
@@ -2084,6 +2141,7 @@
       <a href="https://github.com/wetmud/CivicEngagement" target="_blank" rel="noopener">GitHub ↗</a>
       <a href="https://ko-fi.com/jasonsteltman" target="_blank" rel="noopener">☕ Buy me a coffee</a>
       <a href="https://github.com/wetmud/CivicEngagement/issues/new" target="_blank" rel="noopener">Report a bug ↗</a>
+      <a href="mailto:hello@civicengagement.ca">hello@civicengagement.ca</a>
     </div>
   </div>
 </div>
@@ -2646,7 +2704,9 @@
       s.topics.forEach(t => {
         const tag = document.createElement('span');
         tag.className = 'meeting-topic-tag';
-        tag.textContent = t;
+        const name = typeof t === 'object' ? t.name : t;
+        const time = (typeof t === 'object' && t.start) ? t.start + '–' + t.end : null;
+        tag.textContent = time ? name + ' (' + time + ')' : name;
         tags.appendChild(tag);
       });
       sec.appendChild(tags);
@@ -2655,35 +2715,96 @@
 
     // ── Decisions (new format) ────────────────────────────────
     if (s.decisions && s.decisions.length) {
-      const sec = sectionEl('Decisions & Votes');
-      const table = document.createElement('table');
-      table.className = 'meeting-items-table';
-      const thead = document.createElement('thead');
-      const hrow = document.createElement('tr');
-      ['Item', 'Outcome', 'Vote'].forEach(label => {
-        const th = document.createElement('th'); th.textContent = label; hrow.appendChild(th);
-      });
-      thead.appendChild(hrow); table.appendChild(thead);
-      const tbody = document.createElement('tbody');
+      const sec = sectionEl('Decisions & Votes (' + s.decisions.length + ')');
+      const list = document.createElement('div');
+      list.className = 'decision-list';
+
       s.decisions.forEach(d => {
-        const tr = document.createElement('tr');
-        const tdTitle = document.createElement('td');
-        tdTitle.style.maxWidth = '260px';
-        const strong = document.createElement('strong');
-        strong.style.cssText = 'display:block;color:var(--text);margin-bottom:0.2rem;font-size:0.73rem';
-        strong.textContent = d.item || '';
-        tdTitle.appendChild(strong);
+        const row = document.createElement('div');
+        row.className = 'decision-row';
+
+        // Top row: item text (left) + outcome badge + vote (right)
+        const top = document.createElement('div');
+        top.className = 'decision-row-top';
+
+        const itemText = document.createElement('div');
+        itemText.className = 'decision-item-text';
+        itemText.textContent = d.item || '';
+        top.appendChild(itemText);
+
+        const right = document.createElement('div');
+        right.className = 'decision-right';
+
         const resultKey = (d.result || '').toLowerCase().split(' ')[0];
-        const outcome = outcomeClasses[resultKey] ? (resultKey.charAt(0).toUpperCase() + resultKey.slice(1)) : d.result || 'Noted';
-        const tdOutcome = document.createElement('td');
-        tdOutcome.appendChild(outcomeBadge(outcome));
-        const tdVote = document.createElement('td');
-        tdVote.textContent = d.vote || '\u2014';
-        tr.appendChild(tdTitle); tr.appendChild(tdOutcome); tr.appendChild(tdVote);
-        tbody.appendChild(tr);
+        const outcomeLabel = outcomeClasses[resultKey]
+          ? (resultKey.charAt(0).toUpperCase() + resultKey.slice(1))
+          : d.result || 'Noted';
+        right.appendChild(outcomeBadge(outcomeLabel));
+
+        // Vote — structured yes/no or plain string
+        const v = d.votes;
+        if (v && (v.yes != null || v.no != null)) {
+          const voteEl = document.createElement('div');
+          voteEl.className = 'decision-vote-count';
+          const yesSpan = document.createElement('span');
+          yesSpan.className = 'decision-vote-yes';
+          yesSpan.textContent = (v.yes != null ? v.yes : '?') + '\u202f\u2713';
+          const sep = document.createTextNode('\u2009/\u2009');
+          const noSpan = document.createElement('span');
+          noSpan.className = 'decision-vote-no';
+          noSpan.textContent = (v.no != null ? v.no : '?') + '\u202f\u2717';
+          voteEl.appendChild(yesSpan);
+          voteEl.appendChild(sep);
+          voteEl.appendChild(noSpan);
+          if (v.absent) {
+            const ab = document.createElement('div');
+            ab.style.cssText = 'font-size:0.6rem;color:var(--text-muted);text-align:right';
+            ab.textContent = v.absent + ' absent';
+            voteEl.appendChild(ab);
+          }
+          right.appendChild(voteEl);
+        }
+
+        top.appendChild(right);
+        row.appendChild(top);
+
+        // Plain vote string — full width below the top row
+        if (!v && d.vote) {
+          const voteEl = document.createElement('div');
+          voteEl.className = 'decision-meta';
+          voteEl.textContent = d.vote;
+          row.appendChild(voteEl);
+        }
+
+        // Meta line: mover · location
+        const metaParts = [];
+        if (d.proposed_by) metaParts.push('Moved by ' + d.proposed_by);
+        if (d.seconded_by) metaParts.push('sec. ' + d.seconded_by);
+        if (d.location) metaParts.push(d.location);
+        if (metaParts.length) {
+          const meta = document.createElement('div');
+          meta.className = 'decision-meta';
+          meta.textContent = metaParts.join(' \u00b7 ');
+          row.appendChild(meta);
+        }
+
+        // Tags
+        if (d.tags && d.tags.length) {
+          const tagWrap = document.createElement('div');
+          tagWrap.className = 'decision-tags';
+          d.tags.forEach(tag => {
+            const t = document.createElement('span');
+            t.className = 'decision-tag';
+            t.textContent = tag;
+            tagWrap.appendChild(t);
+          });
+          row.appendChild(tagWrap);
+        }
+
+        list.appendChild(row);
       });
-      table.appendChild(tbody);
-      sec.appendChild(table);
+
+      sec.appendChild(list);
       body.appendChild(sec);
     }
 
@@ -2825,7 +2946,7 @@
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('tab-' + name).classList.add('active');
-    // if (name === 'meetings') loadMeetings(); // re-enable when pipeline is ready
+    if (name === 'meetings') loadMeetings();
   }
 
   function requestFeature(feature) {
@@ -3042,7 +3163,8 @@
           ${socialHtml}
           <div class="rep-actions">
             ${email ? `<button class="btn-primary rep-email-btn" data-rep-idx="${i}">&#9993; Write Email</button>` : ''}
-            ${rep.url ? `<a class="btn-outline" href="${escAttr(rep.url)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">&#8599; Profile</a>` : ''}
+            <button class="btn-outline rep-profile-btn" data-rep-idx="${i}" onclick="event.stopPropagation()">&#128100; View Profile</button>
+            ${rep.url ? `<a class="btn-outline" href="${escAttr(rep.url)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">&#8599; Official Page</a>` : ''}
             <button class="btn-outline rep-copy-btn" onclick="event.stopPropagation();copyInfo('${escAttr(rep.name)}', '${escAttr(email)}')">Copy Info</button>
           </div>
         </div>`;
@@ -3065,6 +3187,10 @@
     el.querySelectorAll('.rep-email-btn[data-rep-idx]').forEach(btn => {
       const idx = parseInt(btn.dataset.repIdx, 10);
       btn.addEventListener('click', e => { e.stopPropagation(); openModal(reps[idx]); });
+    });
+    el.querySelectorAll('.rep-profile-btn[data-rep-idx]').forEach(btn => {
+      const idx = parseInt(btn.dataset.repIdx, 10);
+      btn.addEventListener('click', e => { e.stopPropagation(); openRepProfile(reps[idx]); });
     });
   }
 

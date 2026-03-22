@@ -1,96 +1,263 @@
 {
   "date": "2026-02-17",
   "municipality": "Burlington, Ontario",
-  "tldr": "Council debated temporarily eliminating development charges to boost housing construction, with significant procedural delays and public engagement concerns raised. The decision on development charges was deferred to a special meeting on March 2, 2026, and council acknowledged falling short on public notice procedures.",
+  "meeting_type": "Regular Meeting of Council",
+  "tldr": "Council deferred most business items to March 2, 2026 to allow more time for discussion on contentious issues including temporary elimination of development charges. The meeting heard competing delegations on development charges relief from builders' groups and residents opposed to the proposal, as well as concerns about heritage property designation and council governance policies.",
+  "productive_minutes": 150,
+  "procedural_minutes": 158,
   "topics": [
-    "Temporary elimination of development charges for residential construction",
-    "Housing affordability and municipal revenue impacts",
-    "Development industry crisis and job losses",
-    "Heritage designation and property protection",
-    "Strong Mayor Powers and governance procedures",
-    "Council public engagement and agenda notification processes",
-    "Municipal policy review and oversight"
+    {
+      "name": "Meeting procedures and delegation registration",
+      "start": "00:00",
+      "end": "00:52"
+    },
+    {
+      "name": "Strong Mayor's Powers and information gathering",
+      "start": "00:56",
+      "end": "01:27"
+    },
+    {
+      "name": "Development Charges Temporary Elimination (DGM-326)",
+      "start": "01:44",
+      "end": "04:29"
+    },
+    {
+      "name": "Code of Good Governance and Staff Relations Policies",
+      "start": "03:36",
+      "end": "03:46"
+    },
+    {
+      "name": "Heritage Response to Bill 23 Phase 2 - Property Designation",
+      "start": "03:46",
+      "end": "03:59"
+    },
+    {
+      "name": "Confidential Items and Closed Session",
+      "start": "04:30",
+      "end": "05:08"
+    }
   ],
   "decisions": [
     {
-      "item": "Waive procedure bylaws to allow three late-registered delegates to speak",
-      "result": "Approved",
-      "vote": "7-0 unanimous"
-    },
-    {
-      "item": "Defer all business items (excluding proclamations, recognitions, confidential items, and delegations) to special council meeting",
-      "result": "Approved",
-      "vote": "4-3 (Kearns, Nielsen, Stolti, Mayor Mead-Ward in favour; Galbraith, Sharman, Bentavanya opposed)"
-    },
-    {
-      "item": "Decision on temporary elimination of development charges",
-      "result": "Deferred to March 2, 2026 special meeting",
-      "vote": "Vote scheduled for two weeks"
-    },
-    {
-      "item": "Confirm meeting minutes from January 26, 2026",
-      "result": "Approved",
-      "vote": "Unanimous"
-    },
-    {
-      "item": "By-law Number 11, 2026 - Confirm proceedings of council meeting of February 17, 2026",
+      "item": "Motion to waive rules of procedure to allow late delegations (David Barker - DGM-326, Shannon Gillies - heritage, Lynn Crosby - DGM-306)",
       "result": "Passed",
-      "vote": "7-0"
+      "proposed_by": "Councillor Stolti",
+      "seconded_by": "Councillor Sharman",
+      "votes": {
+        "yes": 7,
+        "no": 0,
+        "absent": 0
+      },
+      "location": null,
+      "bylaws": [
+        "Procedure Bylaw 46.1"
+      ],
+      "tags": [
+        "procedural"
+      ]
+    },
+    {
+      "item": "Motion to defer entire business agenda (excluding proclamations, recognitions, and delegations) to March 2, 2026 special council meeting",
+      "result": "Passed",
+      "proposed_by": "Councillor Stolti",
+      "seconded_by": "Councillor Nissan",
+      "votes": {
+        "yes": 4,
+        "no": 3,
+        "absent": 0
+      },
+      "location": null,
+      "bylaws": [],
+      "tags": [
+        "procedural"
+      ]
+    },
+    {
+      "item": "Motion to approve amended agenda (with deferred items)",
+      "result": "Passed",
+      "proposed_by": null,
+      "seconded_by": null,
+      "votes": {
+        "yes": 7,
+        "no": 0,
+        "absent": 0
+      },
+      "location": null,
+      "bylaws": [],
+      "tags": [
+        "procedural"
+      ]
+    },
+    {
+      "item": "Motion to approve regular council meeting minutes from January 26, 2026",
+      "result": "Passed",
+      "proposed_by": "Councillor Nissan",
+      "seconded_by": "Councillor Sharman",
+      "votes": {
+        "yes": 7,
+        "no": 0,
+        "absent": 0
+      },
+      "location": null,
+      "bylaws": [],
+      "tags": [
+        "procedural"
+      ]
+    },
+    {
+      "item": "Deferral of development charges agenda item to March 2 council meeting, with referral back to Committee of the Whole for robust discussion",
+      "result": "Deferred",
+      "proposed_by": "Councillor Stolti",
+      "seconded_by": null,
+      "votes": {
+        "yes": null,
+        "no": null,
+        "absent": null
+      },
+      "location": null,
+      "bylaws": [],
+      "tags": [
+        "budget",
+        "development",
+        "procedural"
+      ]
+    },
+    {
+      "item": "Go into closed session to discuss confidential items",
+      "result": "Passed",
+      "proposed_by": "Councillor Bentovania",
+      "seconded_by": "Councillor Currents",
+      "votes": {
+        "yes": 4,
+        "no": 3,
+        "absent": 0
+      },
+      "location": null,
+      "bylaws": [],
+      "tags": [
+        "procedural"
+      ]
+    },
+    {
+      "item": "Confirm confidential committee of the whole closed meeting minutes of February 9",
+      "result": "Passed",
+      "proposed_by": "Councillor Sharman",
+      "seconded_by": "Councillor Stolti",
+      "votes": {
+        "yes": null,
+        "no": 0,
+        "absent": null
+      },
+      "location": null,
+      "bylaws": [],
+      "tags": [
+        "procedural"
+      ]
+    },
+    {
+      "item": "Confirm confidential closed meeting minutes (item with Councillor Galbraith conflict)",
+      "result": "Passed",
+      "proposed_by": null,
+      "seconded_by": null,
+      "votes": {
+        "yes": null,
+        "no": 0,
+        "absent": null
+      },
+      "location": null,
+      "bylaws": [],
+      "tags": [
+        "procedural"
+      ]
+    },
+    {
+      "item": "Enact and pass Bylaw 11-2026 to confirm proceedings of council meeting of February 17, 2026",
+      "result": "Passed",
+      "proposed_by": "Councillor Sharman",
+      "seconded_by": "Councillor Stolti",
+      "votes": {
+        "yes": 7,
+        "no": 0,
+        "absent": 0
+      },
+      "location": null,
+      "bylaws": [
+        "11-2026"
+      ],
+      "tags": [
+        "procedural",
+        "bylaws"
+      ]
+    },
+    {
+      "item": "Adjourn meeting until March",
+      "result": "Passed",
+      "proposed_by": "Councillor Sharman",
+      "seconded_by": "Councillor Nissan",
+      "votes": {
+        "yes": null,
+        "no": 0,
+        "absent": null
+      },
+      "location": null,
+      "bylaws": [],
+      "tags": [
+        "procedural"
+      ]
     }
   ],
   "delegations": [
     {
-      "speaker": "Michael Collins-Williams, CEO, West End Home Builders Association",
-      "topic": "Development charge elimination",
-      "summary": "Urged council to approve temporary elimination of development charges, citing industry crisis with only 4 condo units sold in 2025 and construction job losses. Argued the revenue loss estimates are overly pessimistic and that eliminating charges would help make entry-level housing affordable for teachers, firefighters, and nurses."
+      "speaker": "Michael Collins Williams",
+      "topic": "Development Charges Temporary Elimination (DGM-326)",
+      "summary": "CEO of West End Home Builders Association representing 300+ member companies advocated for immediate temporary elimination of development charges, stating the housing pipeline is seized and jobs are being lost daily. He disputed revenue loss projections and emphasized federal and provincial support for municipal housing action, noting only 4 condo units sold in Burlington in 2025."
     },
     {
-      "speaker": "Mike, Home Builders Association",
-      "topic": "Temporary elimination of development charges",
-      "summary": "Requested two-year temporary DC elimination to stimulate residential construction during industry crisis. Argued reduced charges would be passed to consumers, improving affordability, and emphasized need for provincial/federal funding support."
+      "speaker": "Mike Moffat (HPA - Home Builders' Professional Association)",
+      "topic": "Temporary Elimination of Development Charges",
+      "summary": "Advocated for a 2-year temporary elimination of development charges to address housing crisis and construction job losses, arguing charge reduction would be passed to consumers and generate long-term property tax growth. Recommended a cap around $1.8 million to focus on workforce housing."
     },
     {
       "speaker": "Jim Thompson",
-      "topic": "Development charges and Council governance",
-      "summary": "Opposed DC elimination, arguing it shifts costs to taxpayers through future property tax increases. Raised concerns that 63 of 79 city policies are overdue for review and called for better council accountability and policy oversight."
+      "topic": "Development Charges Elimination - Opposition",
+      "summary": "Opposed eliminating development charges, arguing it transfers costs to property taxpayers and will result in inflated future property taxes. He stated the core issue is structural (wage-to-housing cost disparity) not cyclical, and proposed instead deferring charges until certificate of occupancy and 75% occupancy."
+    },
+    {
+      "speaker": "Jim Thompson",
+      "topic": "Code of Good Governance and Staff Relations Policies",
+      "summary": "Noted that 80% of city policies have not been reviewed in a timely manner and identified outdated Enterprise Risk Management and IT Security policies. He criticized staff for failing to provide timely reports and requested thorough review of council-staff relations policies per Municipal Act obligations."
     },
     {
       "speaker": "Shannon Gillies",
-      "topic": "Heritage designation",
-      "summary": "Advocated for heritage study of 1419 Ontario Street, then requested the property be removed from the study list in favour of another property in a high-density area at greater demolition risk."
+      "topic": "Heritage Response to Bill 23 Phase 2 - Property Designation",
+      "summary": "Objected to her property at 1419 Ontario Street being ranked #2 for heritage designation, arguing it is not at demolition risk and property owners received insufficient notice. She requested removal from the list or deferral and advocated for proactive voluntary designation encouragement rather than forced designation."
     },
     {
-      "speaker": "Brandt Street property owner",
-      "topic": "Heritage designation and property protection",
-      "summary": "Resident advocated for heritage protection of their property citing demolition risk from condo development. Suggested expanding heritage character area designation to include multiple adjacent properties for equitable protection."
+      "speaker": "Shannon (resident at 1419 Ontario Street)",
+      "topic": "Heritage Designation and Restrictions on Property Modifications",
+      "summary": "Expressed concerns about future accessibility modifications to her heritage property while neighbouring identical properties lack such constraints. She preferred heritage character area designation as an alternative to full heritage designation to achieve more equitable treatment."
     },
     {
       "speaker": "David Barker",
-      "topic": "Development charge elimination",
-      "summary": "Strongly opposed eliminating development charges, arguing it would subsidize developers' profits and shift costs to property taxpayers. Proposed deferring charges until 75% occupancy and called for a referendum on the ballot."
+      "topic": "Development Charges Elimination - Opposition",
+      "summary": "Strongly opposed eliminating development charges, arguing it would transfer $16-41 million in lost revenue to property taxpayers via higher taxes. He criticized developers for ignoring zoning while seeking subsidies and proposed instead deferring charges until certificate of occupancy and 75% occupancy."
     },
     {
       "speaker": "Lynn Crosby",
-      "topic": "Development charges, Strong Mayor Powers, and public engagement",
-      "summary": "Criticized the rushed decision-making process with inadequate public notice (meetings scheduled before a long weekend with daytime timing). Opposed subsidizing developers and called the use of Strong Mayor Powers disrespectful to council, staff, and citizens."
+      "topic": "Development Charges Elimination - Process and Democratic Concerns",
+      "summary": "Criticized the rushed process and lack of citizen engagement on development charges, noting the matter was released before Family Day weekend limiting public awareness. She opposed waiving charges entirely, raised concerns about strong mayor powers, and questioned reliance on uncertain provincial/federal funding."
     }
   ],
   "bylaws": [
     {
       "number": "11-2026",
-      "title": "Confirm the proceedings of council at the meeting of February 17, 2026",
-      "result": "Passed",
+      "title": "Bylaw to confirm the proceedings of council at meeting of February 17, 2026",
+      "result": "passed",
       "vote": "7-0"
     }
   ],
   "key_issues": {
-    "procedural_concerns": "Council acknowledged multiple public engagement failures: agenda released late Friday after delegation deadline, no confirmation emails sent for online delegation forms, and extended delegation window not publicly announced. Legal Services Commissioner confirmed council can proceed despite bylaw non-compliance.",
-    "development_charges_debate": "CFO provided supplementary financial report showing development charge elimination would cost the city $16-42 million. Council was split on whether temporary elimination would stimulate housing construction or simply reduce municipal revenue. The decision was deferred to allow more time for deliberation.",
-    "governance_concerns": "Councillor Nielsen raised concerns about Strong Mayor Powers bypassing normal committee process, forcing staff to work over weekend. Jim Thompson highlighted that 63 of 79 city policies are overdue for review.",
-    "recognition": "Heather Howell, M.M. Robinson High School teacher, recognized for receiving 2026 Governor General's History Award for Excellence in Teaching for her heritage garden project."
+    "summary": "The meeting's central issue was a proposal to temporarily eliminate development charges to address the housing crisis and construction industry job losses. Industry delegations from the West End Home Builders Association and Home Builders' Professional Association advocated for a 2-year exemption or elimination, arguing that this would relieve pressure on housing prices and stimulate the stalled construction pipeline. However, multiple residents (Jim Thompson and David Barker) opposed the measure, contending it would transfer substantial costs ($16-41 million in lost revenue) to existing property taxpayers through future tax increases, and that the core issue is structural rather than cyclical. Lynn Crosby added procedural concerns about rushed decision-making and the use of strong mayor powers without adequate public engagement. Given the contentious nature and split council vote (4-3) on deferring business, Council chose to delay the development charges decision to a special March 2 meeting to allow Committee of the Whole to conduct more robust discussion.\n\nA secondary issue involved heritage property designation at 1419 Ontario Street, where resident Shannon Gillies objected to her home being ranked #2 for heritage designation study. She cited concerns about unequal application of restrictions (adjacent identical properties not designated), insufficient notice, and potential future accessibility challenges. She expressed willingness to voluntarily designate her property after 5-6 years but opposed forced designation. Additionally, Jim Thompson raised governance concerns about outdated council policies, noting that 80% of city policies have not been timely reviewed in accordance with Municipal Act obligations, particularly council-staff relations policies."
   },
-  "next_meeting": "2026-03-02 (Special council meeting to vote on development charges and address deferred business items)",
-  "meeting_type": "Regular Meeting of Council",
-  "source_url": "https://burlingtonpublishing.escribemeetings.com/Meeting.aspx?Id=f2f43022-2ed7-4a64-8828-7bf4e7fe3f2d&Agenda=Agenda&lang=English",
-  "generated_at": "2026-03-18T00:00:00Z"
+  "next_meeting": "2026-03-02"
 }
