@@ -2493,6 +2493,12 @@
   }
 
   const wikiCache = {};
+  const wikiPhotoCache = {}; // name → url string | null
+  // Reps whose Represent API photo is known-bad — skip it and use Wikipedia instead
+  const WIKI_PHOTO_PREFERRED = new Set([
+    'Andrea Horwath',
+    'Nrinder Nann',
+  ]);
   const wikidataCache = {};
   const votingCache = {}; // keyed by openparliament slug
   let _votesOffset = 0;
@@ -3145,10 +3151,11 @@
     let html = `<div class="results-header">${label} — ${reps.length} representative${reps.length !== 1 ? 's' : ''}</div>`;
     reps.forEach((rep, i) => {
       const email = rep.email || '';
-      const photoUrl = rep.photo_url && /^https?:\/\//.test(rep.photo_url) ? rep.photo_url : null;
+      const useWiki = WIKI_PHOTO_PREFERRED.has(rep.name);
+      const photoUrl = !useWiki && rep.photo_url && /^https?:\/\//.test(rep.photo_url) ? rep.photo_url : null;
       const photoHtml = photoUrl
-        ? `<img class="rep-photo" src="${escAttr(photoUrl)}" alt="${escAttr(rep.name)}" onerror="this.style.display='none'">`
-        : '';
+        ? `<img class="rep-photo" src="${escAttr(photoUrl)}" alt="${escAttr(rep.name)}" data-rep-name="${escAttr(rep.name)}" data-rep-office="${escAttr(rep.elected_office || '')}" onerror="tryFallbackPhoto(this)">`
+        : `<img class="rep-photo" alt="${escAttr(rep.name)}" data-rep-name="${escAttr(rep.name)}" data-rep-office="${escAttr(rep.elected_office || '')}" data-load-wiki style="display:none">`;
       const socialHtml = buildSocialLinks(rep);
       html += `
         <div class="rep-card" data-rep-idx="${i}" style="animation-delay:${i * 0.06}s;cursor:pointer" role="button" tabindex="0" aria-label="View profile: ${escAttr(rep.name)}">
@@ -3179,6 +3186,7 @@
   </div>`;
     const el = document.getElementById(elId);
     el.innerHTML = html;
+    el.querySelectorAll('img[data-load-wiki]').forEach(img => tryFallbackPhoto(img).then(() => { if (img.src) img.style.display = ''; }));
     el.querySelectorAll('.rep-card[data-rep-idx]').forEach(card => {
       const idx = parseInt(card.dataset.repIdx, 10);
       card.addEventListener('click', () => openRepProfile(reps[idx]));
@@ -3377,6 +3385,51 @@
     fetchVotingRecord(rep);
   }
 
+  async function tryFallbackPhoto(imgEl) {
+    const name = imgEl.dataset.repName;
+    const office = imgEl.dataset.repOffice || '';
+    if (!name) { imgEl.style.display = 'none'; return; }
+
+    // Already cached
+    if (wikiPhotoCache[name] !== undefined) {
+      if (wikiPhotoCache[name]) { imgEl.src = wikiPhotoCache[name]; imgEl.style.display = ''; }
+      else { imgEl.style.display = 'none'; }
+      return;
+    }
+    // If bio was already fetched and stored a photo url, reuse it
+    if (wikiCache[name] && wikiCache[name].photo) {
+      wikiPhotoCache[name] = wikiCache[name].photo;
+      imgEl.src = wikiCache[name].photo;
+      imgEl.style.display = '';
+      return;
+    }
+
+    try {
+      const query = encodeURIComponent(name + ' ' + office);
+      const sRes = await Promise.race([
+        fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' + query + '&format=json&origin=*&srlimit=1'),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 3000))
+      ]);
+      const sData = await sRes.json();
+      const hits = sData.query && sData.query.search;
+      if (!hits || !hits.length) { wikiPhotoCache[name] = null; imgEl.style.display = 'none'; return; }
+
+      const pageTitle = hits[0].title;
+      const pRes = await Promise.race([
+        fetch('https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&piprop=thumbnail&pithumbsize=200&titles=' + encodeURIComponent(pageTitle) + '&format=json&origin=*'),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 3000))
+      ]);
+      const pData = await pRes.json();
+      const page = pData.query && Object.values(pData.query.pages)[0];
+      const thumb = page && page.thumbnail && page.thumbnail.source;
+      wikiPhotoCache[name] = thumb || null;
+      if (thumb) { imgEl.src = thumb; imgEl.style.display = ''; } else { imgEl.style.display = 'none'; }
+    } catch (e) {
+      wikiPhotoCache[name] = null;
+      imgEl.style.display = 'none';
+    }
+  }
+
   async function fetchWikiBio(rep) {
     const wikiEl = document.getElementById('rpModal-wiki');
     const bodyEl = document.getElementById('rpModal-wiki-body');
@@ -3413,8 +3466,10 @@
       const page = pages && Object.values(pages)[0];
       const extract = page && page.extract;
 
-      // Set photo from Wikipedia thumbnail if the modal has no photo yet
+      // Cache photo URL for card fallback reuse
       const thumbUrl = page && page.thumbnail && page.thumbnail.source;
+      if (thumbUrl) { wikiPhotoCache[rep.name] = thumbUrl; }
+      // Set photo from Wikipedia thumbnail if the modal has no photo yet
       if (thumbUrl) {
         const photoEl = document.getElementById('rpModal-photo');
         if (photoEl && (!photoEl.src || photoEl.src === window.location.href)) {

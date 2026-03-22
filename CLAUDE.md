@@ -128,6 +128,8 @@ The scraper backend still uses Claude via `ANTHROPIC_API_KEY` GitHub Secret — 
 **Next up:**
 - [ ] Verify scraper fix after next Tuesday CI run; fix date parsing if still broken
 - [ ] Share on Reddit (r/ontario, r/burlington, r/canadianpolitics, r/civictech) and X
+- [ ] **Build Civil** — AI chat assistant, fully designed. Spec + plan ready: `docs/superpowers/plans/2026-03-22-civil-ai-assistant.md`
+- [ ] City department contacts pipeline — `data/departments/{city}.json` (Burlington first, manual; automate later). Required by Civil.
 - [ ] Re-enable AI drafting once funded
 - [ ] Leader contacts: cabinet/minister links in leader profile (future)
 - [ ] Budget tab: Jason has ideas for non-AI version — revisit
@@ -137,6 +139,8 @@ The scraper backend still uses Claude via `ANTHROPIC_API_KEY` GitHub Secret — 
 - [ ] Response tracking (requires backend + DB)
 - [ ] Organizer mode (bulk/template messaging)
 - [ ] Scale meeting scraper to other cities (Toronto has Open Data API + YouTube)
+- [ ] Civil Phase 2: general civic Q&A, "Open in composer" button, French language support
+- [ ] Civil Discord bot (same personality/system prompt, different transport)
 
 ---
 
