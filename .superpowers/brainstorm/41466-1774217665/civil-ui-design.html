@@ -1,0 +1,87 @@
+<h2>Civil — UI Design</h2>
+<p class="subtitle">How the chat bubble and panel look. Does this feel right?</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">Closed state — bubble in corner</div>
+    <div class="mockup-body" style="position:relative;min-height:300px;background:#0e0f0c;border-radius:8px;overflow:hidden">
+      <!-- Fake site chrome -->
+      <div style="padding:16px;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center">
+        <span style="color:#ffb963;font-weight:600;font-size:0.9em">Civic Engagement</span>
+        <div style="display:flex;gap:8px">
+          <span style="background:#1a1a1a;color:#888;padding:4px 10px;border-radius:4px;font-size:0.7em">Representatives</span>
+          <span style="background:#1a1a1a;color:#888;padding:4px 10px;border-radius:4px;font-size:0.7em">Leaders</span>
+        </div>
+      </div>
+      <div style="padding:16px;color:#555;font-size:0.8em">
+        <div style="background:#1a1a1a;border-radius:8px;padding:12px;margin-bottom:8px">Rep card placeholder...</div>
+        <div style="background:#1a1a1a;border-radius:8px;padding:12px">Rep card placeholder...</div>
+      </div>
+      <!-- Civil bubble -->
+      <div style="position:absolute;bottom:16px;right:16px;display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+        <div style="background:#682FED;color:white;padding:6px 12px;border-radius:12px;font-size:0.72em;font-weight:500;box-shadow:0 4px 12px rgba(104,47,237,0.4)">Need help? Ask Civil ✦</div>
+        <div style="width:48px;height:48px;background:#682FED;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3em;cursor:pointer;box-shadow:0 4px 16px rgba(104,47,237,0.5)">⚖️</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Open state — chat panel</div>
+    <div class="mockup-body" style="background:#0e0f0c;border-radius:8px;overflow:hidden;display:flex;flex-direction:column" >
+      <!-- Panel header -->
+      <div style="background:#682FED;padding:12px 16px;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:1.2em">⚖️</span>
+          <div>
+            <div style="color:white;font-weight:600;font-size:0.9em">Civil</div>
+            <div style="color:rgba(255,255,255,0.7);font-size:0.72em">Your civic guide</div>
+          </div>
+        </div>
+        <span style="color:rgba(255,255,255,0.7);cursor:pointer;font-size:1.1em">✕</span>
+      </div>
+      <!-- Messages -->
+      <div style="flex:1;padding:12px;display:flex;flex-direction:column;gap:10px;background:#111;min-height:200px">
+        <!-- Civil message -->
+        <div style="display:flex;gap:8px;align-items:flex-start">
+          <div style="width:28px;height:28px;background:#682FED;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8em;flex-shrink:0">⚖️</div>
+          <div style="background:#1e1e1e;border-radius:0 10px 10px 10px;padding:10px 12px;color:#e0e0e0;font-size:0.8em;max-width:80%">
+            Hey! I can see you've found your reps for Burlington Ward 2. What's on your mind — something local, provincial, or federal?
+          </div>
+        </div>
+        <!-- User message -->
+        <div style="display:flex;justify-content:flex-end">
+          <div style="background:#682FED;border-radius:10px 0 10px 10px;padding:10px 12px;color:white;font-size:0.8em;max-width:80%">
+            There's a pothole on my street that's been there for months
+          </div>
+        </div>
+        <!-- Civil response -->
+        <div style="display:flex;gap:8px;align-items:flex-start">
+          <div style="width:28px;height:28px;background:#682FED;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8em;flex-shrink:0">⚖️</div>
+          <div style="background:#1e1e1e;border-radius:0 10px 10px 10px;padding:10px 12px;color:#e0e0e0;font-size:0.8em;max-width:80%">
+            That's actually a city roads issue — Burlington Public Works handles it, not your councillor. Want me to find the right contact and help you write a quick report?
+          </div>
+        </div>
+      </div>
+      <!-- Input -->
+      <div style="padding:10px;background:#0e0f0c;border-top:1px solid #222;display:flex;gap:8px">
+        <input style="flex:1;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:8px 12px;color:#e0e0e0;font-size:0.8em" placeholder="Ask Civil anything..." />
+        <button style="background:#682FED;color:white;border:none;border-radius:8px;padding:8px 14px;font-size:0.8em;cursor:pointer">→</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:20px;padding:14px;background:rgba(255,255,255,0.04);border-radius:8px;font-size:0.82em">
+  <strong>Design notes:</strong> ⚖️ as Civil's icon (justice/civic). Purple accent matches light-mode brand colour. Panel is ~320px wide, fixed bottom-right. Tooltip nudge on closed state fades after first open.
+</div>
+
+<div class="options" style="margin-top:16px">
+  <div class="option" data-choice="looks-good" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content"><h3>Looks good — proceed</h3></div>
+  </div>
+  <div class="option" data-choice="tweak" onclick="toggleSelect(this)">
+    <div class="letter">✎</div>
+    <div class="content"><h3>I want to tweak something</h3></div>
+  </div>
+</div>
