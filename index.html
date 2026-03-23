@@ -2176,10 +2176,9 @@
     <input type="text" id="email-subject" placeholder="Subject line" />
     <label>Email body</label>
     <textarea id="email-body" placeholder="Write your message here..."></textarea>
-    <p style="font-size:0.72rem; color:var(--text-muted); margin: 0.5rem 0 0.75rem; line-height:1.6;">
-      💡 <strong>Tip:</strong> We recommend checking out our <button onclick="closeModal();openTips()" style="background:none;border:none;padding:0;color:var(--accent);cursor:pointer;font-size:inherit;font-family:inherit;text-decoration:underline;">Tips page</button> and using your favourite AI to help craft a constructive, civil message.
-    </p>
+    <div id="ai-status" style="display:none; font-size:0.78rem; color:var(--text-muted); margin:0.4rem 0;">✦ Drafting…</div>
     <div class="modal-actions">
+      <button class="btn-outline" onclick="generateEmail()">✦ AI Draft</button>
       <button class="btn-primary" onclick="sendEmail()">Open in Mail →</button>
     </div>
   </div>
@@ -3814,18 +3813,17 @@
     }
   }
 
-  // ── AI email drafting — DISABLED until funded ─────────────
-  /*
+  // ── AI email drafting (Pollinations — free, no key) ───────
   async function generateEmail() {
     if (!currentRep) return;
-    requireApiKey(() => _doGenerateEmail());
+    _doGenerateEmail();
   }
 
   async function _doGenerateEmail() {
     const issue = document.getElementById('issue-select').value;
     const detail = document.getElementById('issue-detail').value;
     const aiStatus = document.getElementById('ai-status');
-    aiStatus.classList.add('visible');
+    aiStatus.style.display = 'block';
 
     const prompt = `Write a brief, polite, and clear email to a government representative named ${currentRep.name} (${currentRep.elected_office}).
 The constituent lives in the area represented by ${currentRep.representative_set_name}.
@@ -3835,30 +3833,31 @@ Write in first person. Keep it under 150 words. Include a clear subject line on 
 Do not include placeholders like [Your Name] — end with just "A Concerned Resident".`;
 
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('https://text.pollinations.ai/openai', {
         method: 'POST',
-        headers: claudeHeaders(),
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
+          model: 'openai',
           messages: [{ role: 'user', content: prompt }]
         })
       });
+      if (!res.ok) throw new Error('non-200');
       const data = await res.json();
-      const text = data.content?.[0]?.text || '';
+      const text = (data.choices && data.choices[0] && data.choices[0].message)
+        ? data.choices[0].message.content
+        : '';
       const lines = text.split('\n');
       const subjectLine = lines.find(l => l.startsWith('Subject:'));
       const body = lines.filter(l => !l.startsWith('Subject:')).join('\n').trim();
       if (subjectLine) document.getElementById('email-subject').value = subjectLine.replace('Subject:', '').trim();
-      document.getElementById('email-body').value = body;
+      if (body) document.getElementById('email-body').value = body;
     } catch {
       document.getElementById('email-body').value = `Dear ${currentRep.name},\n\nI am writing to bring your attention to a concern in our community regarding ${detail || issue || 'an important local issue'}.\n\nI would appreciate your attention to this matter and look forward to your response.\n\nSincerely,\nA Concerned Resident`;
       document.getElementById('email-subject').value = `Community Concern — ${issue || 'Local Issue'}`;
     } finally {
-      aiStatus.classList.remove('visible');
+      aiStatus.style.display = 'none';
     }
   }
-  */
 
   function sendEmail() {
     if (!currentRep?.email) return alert('No email address available for this representative.');
