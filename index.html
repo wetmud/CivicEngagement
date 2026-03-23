@@ -746,9 +746,13 @@
       padding: 0 0.25rem;
     }
 
+    .btn-short { display: none; }
+
     @media (max-width: 480px) {
       .search-box { padding: 0; overflow: hidden; }
-      #search-btn { padding: 0 0.75rem; font-size: 0.65rem; min-width: 80px; letter-spacing: 0.05em; }
+      #search-btn { padding: 0 0.9rem; font-size: 0.7rem; letter-spacing: 0.04em; white-space: nowrap; }
+      .btn-long { display: none; }
+      .btn-short { display: inline; }
       .autocomplete-dropdown { max-width: calc(100vw - 2rem); }
       #address-input { font-size: 1rem; }
     }
@@ -942,7 +946,8 @@
     .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
 
     @media (max-width: 480px) {
-      .tab-btn { font-size: 0.65rem; padding: 0.6rem 0.85rem; letter-spacing: 0.06em; }
+      .tabs { flex-wrap: nowrap; }
+      .tab-btn { font-size: 0.65rem; padding: 0.6rem 0.75rem; letter-spacing: 0.04em; }
       .tab-btn[data-short]::after { content: attr(data-short); }
       .tab-btn[data-short] .tab-long { display: none; }
     }
@@ -1361,9 +1366,11 @@
 
     @media (max-width: 480px) {
       .rep-card { padding: 1.1rem 1.2rem; border-radius: 12px; }
-      .rep-actions { flex-direction: column; gap: 0.4rem; }
+      .rep-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
       .rep-actions .btn-outline,
       .rep-actions .btn-primary { text-align: center; width: 100%; }
+      .rep-actions .btn-primary:only-child,
+      .rep-actions .btn-primary:first-child:nth-last-child(1) { grid-column: 1 / -1; }
       .rep-name { font-size: 1.1rem; }
       .rep-photo { width: 52px; height: 52px; }
     }
@@ -2136,7 +2143,7 @@
           placeholder="e.g. 123 Main St, Burlington, ON"
           autocomplete="off"
         />
-        <button id="search-btn" onclick="findAll()">Find Reps →</button>
+        <button id="search-btn" onclick="findAll()"><span class="btn-long">Find Reps →</span><span class="btn-short">Search</span></button>
       </div>
       <div class="autocomplete-dropdown" id="autocomplete-dropdown" style="display:none;"></div>
     </div>
@@ -2157,9 +2164,9 @@
 
   <div id="results-container" style="display:none;">
     <div class="tabs" id="search-tabs">
-      <button class="tab-btn active" onclick="switchTab('reps', this)">Local &amp; Provincial</button>
+      <button class="tab-btn active" data-short="Local" onclick="switchTab('reps', this)"><span class="tab-long">Local &amp; Provincial</span></button>
       <button class="tab-btn" onclick="switchTab('leaders', this)">Leaders</button>
-      <button class="tab-btn" onclick="switchTab('services', this)">Nearby Services</button>
+      <button class="tab-btn" data-short="Services" onclick="switchTab('services', this)"><span class="tab-long">Nearby Services</span></button>
       <!-- MEETINGS TAB: commented out until scraper is fixed
       <button class="tab-btn" data-short="Meetings" onclick="switchTab('meetings', this)"><span class="tab-long">Council Meetings</span></button>
       -->
