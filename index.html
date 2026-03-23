@@ -12,6 +12,8 @@
     img-src 'self' data: https: https://*.basemaps.cartocdn.com https://*.tile.openstreetmap.org;
     connect-src 'self' https://civicconnect-proxy.jason-steltman.workers.dev https://represent.opennorth.ca https://api.anthropic.com https://en.wikipedia.org https://api.openparliament.ca https://www.wikidata.org;
     frame-ancestors 'none';
+    base-uri 'self';
+    form-action 'none';
   "/>
   <!-- No data collection, no tracking, no cookies -->
   <meta name="referrer" content="no-referrer"/>
@@ -3384,7 +3386,7 @@
     // Photo
     const photoEl = document.getElementById('rpModal-photo');
     if (rep.photo_url && /^https?:\/\//.test(rep.photo_url)) {
-      photoEl.src = escAttr(rep.photo_url);
+      photoEl.src = rep.photo_url;
       photoEl.alt = escAttr(rep.name);
       photoEl.parentElement.style.display = '';
     } else {
@@ -3860,9 +3862,13 @@ Do not include placeholders like [Your Name] — end with just "A Concerned Resi
 
   function sendEmail() {
     if (!currentRep?.email) return alert('No email address available for this representative.');
+    const email = currentRep.email;
+    if (!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email) || /[\r\n]/.test(email)) {
+      return alert('Representative email address appears invalid.');
+    }
     const subject = encodeURIComponent(document.getElementById('email-subject').value);
     const body = encodeURIComponent(document.getElementById('email-body').value);
-    window.open(`mailto:${currentRep.email}?subject=${subject}&body=${body}`);
+    window.open(`mailto:${email}?subject=${subject}&body=${body}`);
   }
 
   function copyInfo(name, email) {
@@ -4433,7 +4439,7 @@ Do not include placeholders like [Your Name] — end with just "A Concerned Resi
 
     if (yearData) {
       cityLabel.textContent = '📅 ' + yearData.label;
-      levyLabel.innerHTML = yearData.levy;
+      levyLabel.textContent = yearData.levy;
     } else if (currentCityKey) {
       cityLabel.textContent = '📅 ' + currentCityKey.charAt(0).toUpperCase() + currentCityKey.slice(1) + ' — ' + currentYear + ' data coming soon';
       levyLabel.innerHTML = '';
