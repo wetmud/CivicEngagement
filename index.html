@@ -166,6 +166,7 @@
       color: var(--text-muted);
       transition: border-color 0.2s, color 0.2s, background 0.2s;
       white-space: nowrap;
+      min-height: 44px; display: inline-flex; align-items: center;
     }
     .btn-about:hover {
       border-color: var(--accent);
@@ -212,6 +213,7 @@
       font-size: 1.1rem;
       cursor: pointer;
       line-height: 1;
+      min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center;
     }
     .about-close:hover { color: var(--text); }
     .about-box h2 {
@@ -483,6 +485,18 @@
       .rep-profile-layout { flex-direction: column; }
       .rep-profile-left { width: 100%; }
       .rep-profile-box { padding: 1.25rem; }
+      .rep-profile-box .about-close {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: var(--surface);
+        border-radius: 50%;
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     }
 
     /* ── API key modal ────────────────────────────────── */
@@ -540,8 +554,8 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 50%;
-      width: 30px;
-      height: 30px;
+      width: 44px;
+      height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -561,21 +575,21 @@
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        padding: 0.75rem 1rem;
-        gap: 0.5rem;
-        flex-wrap: nowrap;
+        padding: 0.6rem 1rem;
+        gap: 0.4rem;
+        flex-wrap: wrap;
       }
       .tagline { display: none; }
       .header-right {
         justify-content: flex-end;
         flex-wrap: nowrap;
-        flex-shrink: 1;
+        flex-shrink: 0;
         gap: 0.3rem;
-        overflow: hidden;
+        overflow: visible;
       }
       .logo { font-size: 1.1rem; flex-shrink: 0; }
-      .theme-toggle { width: 32px; height: 32px; flex-shrink: 0; }
-      .btn-about, .btn-donate { padding: 0.35rem 0.5rem; font-size: 0.63rem; }
+      .theme-toggle { width: 30px; height: 30px; flex-shrink: 0; }
+      .btn-about, .btn-donate { padding: 0.28rem 0.45rem; font-size: 0.62rem; }
     }
 
     main {
@@ -620,7 +634,7 @@
 
     @media (max-width: 480px) {
       .hero { margin-bottom: 1.5rem; }
-      .hero p { font-size: 0.78rem; }
+      .hero p { font-size: 0.78rem; color: var(--text); }
       .about-body p { font-size: 0.82rem; line-height: 1.6; }
     }
 
@@ -635,6 +649,7 @@
       .search-box { padding: 0; overflow: hidden; }
       #search-btn { padding: 0 0.75rem; font-size: 0.65rem; min-width: 80px; letter-spacing: 0.05em; }
       .autocomplete-dropdown { max-width: calc(100vw - 2rem); }
+      #address-input { font-size: 1rem; }
     }
 
     .autocomplete-wrapper { position: relative; }
@@ -717,7 +732,7 @@
 
     .autocomplete-item:last-child { border-bottom: none; }
     .autocomplete-item:hover, .autocomplete-item.active {
-      background: rgba(200, 240, 74, 0.08);
+      background: color-mix(in srgb, var(--accent) 8%, transparent);
       color: var(--accent);
     }
 
@@ -738,7 +753,7 @@
     @media (max-width: 480px) {
       #profile-card { padding: 0; margin-top: 1.25rem; }
       .profile-info { padding: 0.9rem 1rem; }
-      #ward-map { height: 160px; }
+      #ward-map { height: 200px; }
     }
 
     .profile-info {
@@ -1418,6 +1433,7 @@
       transition: border-color 0.2s, color 0.2s, background 0.2s;
       text-decoration: none;
       display: inline-block;
+      min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
     }
 
     .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
@@ -1434,6 +1450,7 @@
       border-radius: 8px;
       cursor: pointer;
       transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
     }
 
     .btn-primary:hover {
@@ -1944,6 +1961,14 @@
 
     @media (max-width: 480px) {
       .budget-standalone { padding: 0 1rem; }
+      .support-tiers { flex-wrap: wrap; }
+      .support-tier { flex: 1 1 calc(50% - 0.25rem); min-width: 0; }
+      .privacy-banner { padding: 0.6rem 1rem; }
+      footer { padding: 1.25rem 1rem; }
+    }
+
+    @media (max-width: 360px) {
+      .btn-about { display: none; }
     }
 
     @media (max-width: 768px) {
