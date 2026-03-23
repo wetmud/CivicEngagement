@@ -809,6 +809,12 @@ Visit `civicengagement.ca` after GitHub Pages deploys (~60 seconds).
 
 ---
 
+## Post-Build Checklist
+
+- [ ] **Run a full security audit after Civil is built** — Civil opens new attack surface: untrusted AI responses rendered in the DOM, new API calls, chat history in memory. Use the Code Reviewer + Security Engineer agents from msitarzewski/agency-agents (same process as the 2026-03-22 audit). Key things to verify: all Civil message bubbles use `textContent` not `innerHTML`, Pollinations responses are never injected raw into the DOM, `civilHistory[]` can't be poisoned via prompt injection that survives into HTML.
+
+---
+
 ## Notes for Implementer
 
 - `wardName` may not exist as a global in all code paths — `civilContext()` guards with `typeof wardName !== 'undefined'` already
