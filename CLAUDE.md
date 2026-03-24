@@ -13,14 +13,20 @@ Frontend lives in `index.html`. No build process. Deploy by pushing to GitHub Pa
 Meeting summarizer is a Python scraper + GitHub Actions pipeline that commits static JSON.
 
 ```
-index.html                          — All frontend (HTML + CSS + JS, ~3900 lines)
+index.html                          — All frontend (HTML + CSS + JS, ~5100 lines)
 ├── <head>                          — CSP, meta, Google Fonts, Leaflet CSS/JS CDN
 ├── <style>                         — All CSS (CSS custom properties for theming)
-├── <body>                          — All HTML markup
-└── <script>                        — All JavaScript (inline)
+├── <body>                          — All HTML markup + Civil chat panel/bubble
+└── <script>                        — All JavaScript (inline) + Civil AI JS
 
 data/
-└── leaders.json                    — Hard-coded PM + provincial leaders, fetched at runtime
+├── leaders.json                    — Hard-coded PM + provincial leaders, fetched at runtime
+└── departments/                    — City intake contacts for Civil routing
+    ├── index.json                  — List of supported cities
+    ├── burlington.json             — Service Burlington (simplified intake schema)
+    ├── toronto.json / ottawa.json / mississauga.json / brampton.json
+    ├── hamilton.json / london.json / kitchener.json / guelph.json
+    └── detailed/burlington-full.json  — Archived full department data (10 depts)
 
 scripts/
 └── scrape_burlington.py            — Meeting scraper (Playwright + pdfplumber + Claude)
@@ -74,6 +80,7 @@ meetings/burlington/
 | Budget data (CITY_BUDGETS) | ~3800 | Hard-coded JSON, 8 ON cities, 2025 + 2026 — **tab commented out** |
 | Meetings tab + panel | ~1793 | Commented out — scraper being fixed |
 | Meeting card rendering | ~2350 | `buildMeetingCard()` — collapsible cards with time bar, items table |
+| **Civil AI chat** | ~4940 (JS) | `civilSend()`, `civilOpen()`, `civilContext()` — Pollinations backend |
 
 ---
 
@@ -120,6 +127,7 @@ The scraper backend still uses Claude via `ANTHROPIC_API_KEY` GitHub Secret — 
 | Meeting scraper date parsing | Medium | Partially fixed 2026-03-18. Awaiting next Tuesday CI run to verify. |
 | No rate limiting | Low | Add per-session debounce or Cloudflare rate limiting |
 | Budget city detection is naive string match | Low | Only matters when budget tab is re-enabled |
+| Service worker disabled | Low | `sw.js` commented out 2026-03-24 — was intercepting Pollinations fetches and causing 401. Re-enable once Civil is stable, with `pollinations` in the API bypass list. |
 
 ---
 
@@ -128,8 +136,9 @@ The scraper backend still uses Claude via `ANTHROPIC_API_KEY` GitHub Secret — 
 **Next up:**
 - [ ] Verify scraper fix after next Tuesday CI run; fix date parsing if still broken
 - [ ] Share on Reddit (r/ontario, r/burlington, r/canadianpolitics, r/civictech) and X
-- [ ] **Build Civil** — AI chat assistant, fully designed. Spec + plan ready: `docs/superpowers/plans/2026-03-22-civil-ai-assistant.md`
-- [ ] City department contacts pipeline — `data/departments/{city}.json` (Burlington first, manual; automate later). Required by Civil.
+- [x] **Build Civil** — shipped 2026-03-24. Floating ⚖️ bubble, Pollinations backend, 9-city dept data.
+- [x] City department contacts — `data/departments/` done for 9 ON cities.
+- [ ] **Debug Civil API connection** — currently showing fallback message. Pollinations endpoint: `gen.pollinations.ai/v1/chat/completions` with `Authorization: Bearer pollinations`. Service worker disabled as workaround. Need to confirm it's working end-to-end.
 - [ ] Re-enable AI drafting once funded
 - [ ] Leader contacts: cabinet/minister links in leader profile (future)
 - [ ] Budget tab: Jason has ideas for non-AI version — revisit
