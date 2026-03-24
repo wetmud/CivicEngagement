@@ -702,11 +702,11 @@
     }
 
     @media (max-width: 480px) {
-      body { min-height: unset; }
+      body { min-height: 0; display: block; }
       main {
-        flex: 0 0 auto;
         padding: 2rem 1rem 1rem;
       }
+      footer { display: none; }
     }
 
     .hero {
