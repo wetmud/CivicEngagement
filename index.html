@@ -5116,7 +5116,7 @@ async function civilSend() {
   try {
     const res = await fetch(CIVIL_API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer pollinations' },
       body: JSON.stringify({ model: 'openai', messages: civilHistory })
     });
 
