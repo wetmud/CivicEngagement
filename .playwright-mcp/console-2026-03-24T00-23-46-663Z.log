@@ -1,0 +1,2 @@
+[      45ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8081/Users/macintosh/Documents/GitHub/CivicConnect/index.html:0
+[      69ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8081/favicon.ico:0
