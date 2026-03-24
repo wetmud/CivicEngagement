@@ -4952,11 +4952,19 @@ function civilContext() {
   const city  = selectedCity     || 'unknown city';
   const prov  = selectedProvince || 'unknown province';
   const ward  = (typeof wardName !== 'undefined' && wardName) ? wardName : 'unknown ward';
-  const depts = civilDepts ? 'true' : 'false';
   const repStr = loadedReps.length
-    ? loadedReps.map(r => `${r.name} (${r.elected_office}, ${r.representative_set_name})`).join('; ')
+    ? loadedReps.map(r => `${r.name} (${r.elected_office}, ${r.representative_set_name}${r.email ? ', email: ' + r.email : ''})`).join('; ')
     : 'none loaded';
-  return `[Session: City=${city}, Province=${prov}, Ward=${ward}, Reps=[${repStr}], Departments loaded=${depts}]`;
+  let deptStr = 'none loaded';
+  if (civilDepts && civilDepts.intake) {
+    const i = civilDepts.intake;
+    deptStr = i.name
+      + (i.phone ? ', phone: ' + i.phone : '')
+      + (i.email ? ', email: ' + i.email : '')
+      + (i.web ? ', web: ' + i.web : '')
+      + (i.hours ? ', hours: ' + i.hours : '');
+  }
+  return `[Session: City=${city}, Province=${prov}, Ward=${ward}, Reps=[${repStr}], City intake contact: ${deptStr}]`;
 }
 
 function civilSystemPrompt() {
@@ -4966,8 +4974,8 @@ You know how government works but you never make people feel dumb for not knowin
 
 Your job:
 1. Help users figure out who to contact about their issue (elected rep or city department)
-2. Find the right department if it's a city services issue
-3. Help them draft a short, effective message
+2. Use the city intake contact from the session context for city services issues — include their phone, email, or web form in your response
+3. Help them draft a short, effective message pre-filled with the user's city, ward, and rep name where relevant
 
 Rules:
 - Keep responses short (2-4 sentences max unless drafting a message)
