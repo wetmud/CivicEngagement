@@ -721,9 +721,10 @@
       line-height: 1.1;
       letter-spacing: -0.03em;
       margin-bottom: 1rem;
+      font-weight: 400;
     }
 
-    .hero h1 em { font-style: italic; color: var(--accent); }
+    .hero h1 em { font-style: italic; color: var(--accent); font-weight: 400; font-size: 1.15em; }
 
     .hero p {
       font-size: 0.8rem;
@@ -735,7 +736,7 @@
 
     @media (max-width: 480px) {
       .hero { margin-bottom: 1.5rem; }
-      .hero p { font-size: 0.78rem; color: var(--text); }
+      .hero p { font-size: 0.78rem; color: var(--text); max-width: 30ch; margin: 0 auto; }
       .about-body p { font-size: 0.82rem; line-height: 1.6; }
     }
 
@@ -761,12 +762,12 @@
 
     .input-row {
       display: flex;
-      border: 1px solid var(--border);
+      border: 1.5px solid var(--border);
       border-radius: 2rem;
       overflow: hidden;
       transition: border-color 0.2s, box-shadow 0.2s;
       background: var(--surface);
-      box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
 
     .input-row:focus-within {
@@ -808,11 +809,6 @@
     #search-btn:active { transform: scale(0.97); }
     #search-btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; }
 
-    .hint {
-      margin-top: 0.75rem;
-      font-size: 0.68rem;
-      color: var(--text-muted);
-    }
 
     .autocomplete-dropdown {
       position: absolute;
@@ -2140,14 +2136,14 @@
         <input
           id="address-input"
           type="text"
-          placeholder="e.g. 123 Main St, Burlington, ON"
+          placeholder="Start typing your Canadian address..."
           autocomplete="off"
         />
         <button id="search-btn" onclick="findAll()"><span class="btn-long">Find Reps →</span><span class="btn-short">Search</span></button>
       </div>
       <div class="autocomplete-dropdown" id="autocomplete-dropdown" style="display:none;"></div>
     </div>
-    <p class="hint">Start typing your Canadian address and select from suggestions.</p>
+
   </div>
 
   <div id="profile-card">
