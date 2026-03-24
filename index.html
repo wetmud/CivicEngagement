@@ -4946,7 +4946,7 @@ let civilOpened    = false;
 let civilDepts     = null;
 let civilLastDraft = '';  // stores last Civil reply — used by civilPrefillEmail()
 
-const CIVIL_POLLINATIONS_URL = 'https://text.pollinations.ai/openai';
+const CIVIL_POLLINATIONS_BASE = 'https://text.pollinations.ai';
 
 function civilContext() {
   const city  = selectedCity     || 'unknown city';
@@ -5114,24 +5114,28 @@ async function civilSend() {
   civilShowTyping();
 
   try {
-    const res = await fetch(CIVIL_POLLINATIONS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'openai', messages: civilHistory })
-    });
+    // Use GET endpoint — no preflight, no CORS issues
+    // Serialize history as a conversation transcript in the prompt
+    const transcript = civilHistory
+      .filter(m => m.role !== 'system')
+      .map(m => (m.role === 'user' ? 'User: ' : 'Civil: ') + m.content)
+      .join('\n');
+    const fullPrompt = transcript + '\nCivil:';
+    const url = CIVIL_POLLINATIONS_BASE + '/' +
+      encodeURIComponent(fullPrompt) +
+      '?model=openai&system=' + encodeURIComponent(civilSystemPrompt()) +
+      '&seed=-1';
+
+    const res = await fetch(url);
 
     civilHideTyping();
 
     if (!res.ok) {
-      console.error('[Civil] API status:', res.status, await res.text().catch(() => ''));
+      console.error('[Civil] API status:', res.status);
       throw new Error('non-200');
     }
 
-    const data  = await res.json();
-    console.log('[Civil] response:', data);
-    const reply = (data.choices && data.choices[0] && data.choices[0].message)
-      ? data.choices[0].message.content
-      : "Sorry, I couldn't get a response right now.";
+    const reply = (await res.text()).trim();
 
     civilLastDraft = reply;  // store for civilPrefillEmail()
     civilHistory.push({ role: 'assistant', content: reply });
