@@ -10,7 +10,7 @@
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
     font-src https://fonts.gstatic.com;
     img-src 'self' data: https: https://*.basemaps.cartocdn.com https://*.tile.openstreetmap.org;
-    connect-src 'self' https://civicconnect-proxy.jason-steltman.workers.dev https://represent.opennorth.ca https://api.anthropic.com https://en.wikipedia.org https://api.openparliament.ca https://www.wikidata.org https://gen.pollinations.ai;
+    connect-src 'self' https://civicconnect-proxy.jason-steltman.workers.dev https://represent.opennorth.ca https://api.anthropic.com https://en.wikipedia.org https://api.openparliament.ca https://www.wikidata.org https://text.pollinations.ai;
     frame-ancestors 'none';
     base-uri 'self';
     form-action 'none';
@@ -4946,7 +4946,7 @@ let civilOpened    = false;
 let civilDepts     = null;
 let civilLastDraft = '';  // stores last Civil reply — used by civilPrefillEmail()
 
-const CIVIL_API_URL = 'https://gen.pollinations.ai/v1/chat/completions';
+const CIVIL_API_BASE = 'https://text.pollinations.ai';
 
 function civilContext() {
   const city  = selectedCity     || 'unknown city';
@@ -5114,11 +5114,11 @@ async function civilSend() {
   civilShowTyping();
 
   try {
-    const res = await fetch(CIVIL_API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'openai', messages: civilHistory })
-    });
+    const conversationText = civilHistory.map(m => m.role + ': ' + m.content).join('\n\n');
+    const url = CIVIL_API_BASE + '/' + encodeURIComponent(conversationText)
+      + '?model=openai&system=' + encodeURIComponent(civilSystemPrompt())
+      + '&seed=' + Math.floor(Math.random() * 9999);
+    const res = await fetch(url);
 
     civilHideTyping();
 
@@ -5127,10 +5127,7 @@ async function civilSend() {
       throw new Error('non-200');
     }
 
-    const data = await res.json();
-    const reply = (data.choices && data.choices[0] && data.choices[0].message)
-      ? data.choices[0].message.content
-      : "Sorry, I couldn't get a response right now.";
+    const reply = (await res.text()).trim();
 
     civilLastDraft = reply;  // store for civilPrefillEmail()
     civilHistory.push({ role: 'assistant', content: reply });
