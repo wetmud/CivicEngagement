@@ -128,6 +128,7 @@ The scraper backend still uses Claude via `ANTHROPIC_API_KEY` GitHub Secret — 
 **Next up:**
 - [ ] Verify scraper fix after next Tuesday CI run; fix date parsing if still broken
 - [ ] Share on Reddit (r/ontario, r/burlington, r/canadianpolitics, r/civictech) and X
+- [ ] Reach out to https://www.dougfordclownshow.ca/
 - [ ] **Build Civil** — AI chat assistant, fully designed. Spec + plan ready: `docs/superpowers/plans/2026-03-22-civil-ai-assistant.md`
 - [ ] City department contacts pipeline — `data/departments/{city}.json` (Burlington first, manual; automate later). Required by Civil.
 - [ ] Re-enable AI drafting once funded
