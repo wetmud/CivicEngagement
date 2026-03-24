@@ -1730,20 +1730,24 @@
     .footer-recommend-btn:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
 
     .privacy-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
       background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 0.6rem 2.5rem;
+      border-top: 1px solid var(--border);
+      padding: 0.6rem 1.25rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
       font-size: 0.65rem;
       color: var(--text-muted);
-      animation: fadeUp 0.4s ease both;
+      z-index: 200;
     }
 
-    .privacy-banner .privacy-text { display: flex; align-items: center; gap: 0.5rem; }
-    .privacy-banner .privacy-icon { color: var(--accent); font-size: 0.8rem; }
+    .privacy-banner .privacy-text { display: flex; align-items: center; gap: 0.4rem; }
+    .privacy-banner .privacy-icon { color: var(--accent); font-size: 0.8rem; flex-shrink: 0; }
 
     .privacy-dismiss {
       background: none;
@@ -1755,6 +1759,7 @@
       border-radius: 3px;
       cursor: pointer;
       white-space: nowrap;
+      flex-shrink: 0;
       transition: border-color 0.2s, color 0.2s;
     }
 
@@ -2068,7 +2073,7 @@
       .budget-standalone { padding: 0 1rem; }
       .support-tiers { flex-wrap: wrap; }
       .support-tier { flex: 1 1 calc(50% - 0.25rem); min-width: 0; }
-      .privacy-banner { padding: 0.6rem 1rem; }
+
       footer { padding: 1.25rem 1rem; }
     }
 
@@ -2120,7 +2125,7 @@
 <div class="privacy-banner" id="privacy-banner">
   <div class="privacy-text">
     <span class="privacy-icon">🔒</span>
-    <span>Civic Engagement collects <strong>zero data</strong> about you. Addresses you search are never stored, logged, or shared. No cookies. No tracking. Everything happens in your browser and is gone when you leave.</span>
+    <span>No data collected, ever. No cookies, no tracking.</span>
   </div>
   <button class="privacy-dismiss" onclick="dismissPrivacy()">Got it</button>
 </div>
