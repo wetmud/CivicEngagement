@@ -10,7 +10,7 @@
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
     font-src https://fonts.gstatic.com;
     img-src 'self' data: https: https://*.basemaps.cartocdn.com https://*.tile.openstreetmap.org;
-    connect-src 'self' https://civicconnect-proxy.jason-steltman.workers.dev https://represent.opennorth.ca https://api.anthropic.com https://en.wikipedia.org https://api.openparliament.ca https://www.wikidata.org https://gen.pollinations.ai;
+    connect-src 'self' https://civicconnect-proxy.jason-steltman.workers.dev https://represent.opennorth.ca https://api.anthropic.com https://en.wikipedia.org https://api.openparliament.ca https://www.wikidata.org;
     frame-ancestors 'none';
     base-uri 'self';
     form-action 'none';
@@ -4946,8 +4946,7 @@ let civilOpened    = false;
 let civilDepts     = null;
 let civilLastDraft = '';  // stores last Civil reply — used by civilPrefillEmail()
 
-const CIVIL_API_URL = 'https://gen.pollinations.ai/v1/chat/completions';
-const CIVIL_API_KEY = 'pk_Od3Gpkn7t3afHkqw';
+const CIVIL_API_URL = 'https://civicconnect-proxy.jason-steltman.workers.dev/civil';
 
 function civilContext() {
   const city  = selectedCity     || 'unknown city';
@@ -5117,7 +5116,7 @@ async function civilSend() {
   try {
     const res = await fetch(CIVIL_API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + CIVIL_API_KEY },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model: 'openai', messages: civilHistory })
     });
 
