@@ -127,7 +127,7 @@ The scraper backend still uses Claude via `ANTHROPIC_API_KEY` GitHub Secret — 
 | Meeting scraper date parsing | Medium | Partially fixed 2026-03-18. Awaiting next Tuesday CI run to verify. |
 | No rate limiting | Low | Add per-session debounce or Cloudflare rate limiting |
 | Budget city detection is naive string match | Low | Only matters when budget tab is re-enabled |
-| Service worker disabled | Low | `sw.js` commented out 2026-03-24 — was intercepting Pollinations fetches and causing 401. Re-enable once Civil is stable, with `pollinations` in the API bypass list. |
+| Service worker disabled | Low | `sw.js` commented out 2026-03-24. Civil now routes through Cloudflare Worker so SW interference is no longer an issue. Safe to re-enable sw.js for offline caching. |
 
 ---
 
@@ -138,7 +138,7 @@ The scraper backend still uses Claude via `ANTHROPIC_API_KEY` GitHub Secret — 
 - [ ] Share on Reddit (r/ontario, r/burlington, r/canadianpolitics, r/civictech) and X
 - [x] **Build Civil** — shipped 2026-03-24. Floating ⚖️ bubble, Pollinations backend, 9-city dept data.
 - [x] City department contacts — `data/departments/` done for 9 ON cities.
-- [ ] **Debug Civil API connection** — currently showing fallback message. Pollinations endpoint: `gen.pollinations.ai/v1/chat/completions` with `Authorization: Bearer pollinations`. Service worker disabled as workaround. Need to confirm it's working end-to-end.
+- [x] **Civil API working** — proxied through Cloudflare Worker (`/civil` route). Secret key in Worker env as `POLLINATIONS_KEY`. `selectedCity` bug fixed (URL param path wasn't setting it). Dept contacts and rep emails now in context per message.
 - [ ] Re-enable AI drafting once funded
 - [ ] Leader contacts: cabinet/minister links in leader profile (future)
 - [ ] Budget tab: Jason has ideas for non-AI version — revisit
